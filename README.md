@@ -1,6 +1,6 @@
 # CloudCrawler
 
-This repository contains cloud crawler functions used by [scrapeulous.com/cloud-crawler](scrapeulous.com/cloud-crawler).
+This repository contains cloud crawler functions used by [scrapeulous.com/cloud-crawler](https://scrapeulous.com/cloud-crawler).
 
 If you want to add your own cloud crawler function to be used within the crawling infrastructure of scrapeulous, please contact us at [contact](https://scrapeulous.com/contact/).
 
