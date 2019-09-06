@@ -19,7 +19,8 @@ async function Worker(page, options) {
     await page.goto('https://www.google.com/webhp?num=10');
     await page.waitForSelector('#main');
 
-    for (let keyword of options.chunk) {
+    for (let index in options.chunk) {
+        let keyword = options.chunk[index];
         const input = await page.$('input[name="q"]');
         await page.evaluate((value, selector) => {
             document.querySelector(selector).value = value;
@@ -29,7 +30,7 @@ async function Worker(page, options) {
         await page.waitForSelector('.g .r');
         await page.waitFor(500);
 
-        results[keyword] = await page.evaluate(() => {
+        results[index] = await page.evaluate(() => {
             let res =  document.querySelectorAll('.g .r a');
             const data = [];
             res.forEach((linkElement) => {

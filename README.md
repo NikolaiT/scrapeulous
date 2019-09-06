@@ -8,3 +8,4 @@ If you want to add your own cloud crawler function to be used within the crawlin
 
 + [Scraping of Products on Amazon](amazon.js)
 + [Extract Links from the Google SERP](google.js)
++ [Simple HTTP crawler using axios](http_get.js)

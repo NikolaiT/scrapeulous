@@ -12,7 +12,8 @@ async function Worker(page, options) {
     await page.waitForSelector('#nav-search');
     await page.waitFor(200);
 
-    for (let product of options.chunk) {
+    for (let index in options.chunk) {
+        let product = options.chunk[index];
         // search product
         const input = await page.$('input[name="field-keywords"]');
         await page.evaluate((value) => {
@@ -24,7 +25,7 @@ async function Worker(page, options) {
         await page.waitFor(1000);
 
         // parse product information
-        results[product] = await page.evaluate(() => {
+        results[index] = await page.evaluate(() => {
             let products =  document.querySelectorAll('.s-result-list .s-result-item');
             const data = [];
             products.forEach((el) => {
@@ -32,7 +33,7 @@ async function Worker(page, options) {
                 let linkElement = el.querySelector('div > h2 > a');
                 try {
                     if (linkElement) {
-                        obj.link = linkElement.getAttribute('href');
+                        obj.url = linkElement.getAttribute('href');
                         obj.title = linkElement.querySelector('span').innerText;
                     }
                     obj.price = el.querySelector('.a-price span').innerText;
