@@ -1,13 +1,10 @@
 /**
  * Scrape amazon product data.
  *
- * @param keyword: The keyword that is requested with axios
+ * @param keyword: The keyword that is requested on Amazon
  * @param options: Holds all configuration data and options
- * @param options.chunk: The chunk that this Worker was assigned
- * @param page: A puppeteer like page object. See here:
- *  https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#class-page
  */
-async function Worker(keyword, page, options) {
+async function Worker(keyword, options) {
     await page.goto('https://www.amazon.com/');
     await page.waitForSelector('#nav-search');
     await page.waitFor(200);

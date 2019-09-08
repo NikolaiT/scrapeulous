@@ -9,11 +9,9 @@
  * should return before this hard limit.
  *
  * @param url: The url that is requested with axios
- * @param axios: A axios http library object
  * @param options: Holds all configuration data and options
- * @param options.chunk: The chunk that this Worker was assigned
  */
-async function Worker(url, axios, options) {
+async function Worker(url, options) {
     var result = null;
     await axios.get(url)
         .then(function (response) {

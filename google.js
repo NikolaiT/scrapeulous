@@ -1,20 +1,10 @@
 /**
+ * Searches on Google and extracts url and titles from the SERP.
  *
- * The worker function contains your scraping/crawling logic.
- *
- * Each Worker() function is executed on a distributed unique machine
- * with dedicated CPU, memory and browser instance. A unique IP is not guaranteed, but it is the norm.
- *
- * Scraping workers time out after 120 seconds. So the function
- * should return before this hard limit.
- *
- * @param keyword: The keyword that is requested with axios
+ * @param keyword: The keyword that is requested on Google
  * @param options: Holds all configuration data and options
- * @param options.chunk: The chunk that this Worker was assigned
- * @param page: A puppeteer like page object. See here:
- *  https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#class-page
  */
-async function Worker(keyword, page, options) {
+async function Worker(keyword, options) {
     let selector = '[name="q"]';
     await page.goto('https://www.google.com/webhp?num=10');
     await page.waitForSelector('#main');
