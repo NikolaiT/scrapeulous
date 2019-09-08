@@ -8,20 +8,16 @@
  * Scraping workers time out after 120 seconds. So the function
  * should return before this hard limit.
  *
+ * @param url: The url that is requested with axios
+ * @param axios: A axios http library object
  * @param options: Holds all configuration data and options
  * @param options.chunk: The chunk that this Worker was assigned
- * @param axios: A axios http library object
  */
-async function Worker(axios, options) {
-    const results = {};
-
-    for (let index in options.chunk) {
-        let url = options.chunk[index];
-        await axios.get(url)
-            .then(function (response) {
-                results[index] = response.data;
-            });
-    }
-
-    return results;
+async function Worker(url, axios, options) {
+    var result = null;
+    await axios.get(url)
+        .then(function (response) {
+            result = response.data;
+        });
+    return result;
 }
