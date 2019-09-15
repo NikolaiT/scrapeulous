@@ -56,6 +56,7 @@ async function Worker(item, options) {
 
 ## Examples of Crawler functions
 
++ [Debugging crawlers by getting IP data and http headers](ip_and_headers.js)
 + [Scraping of Products on Amazon](amazon.js)
 + [Extract Links from the Google SERP](google.js)
 + [Simple HTTP crawler using axios](http_get.js)
