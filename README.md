@@ -9,7 +9,7 @@ If you want to add your own cloud crawler function to be used within the crawlin
 You can add two types of Cloud Crawler functions:
 
 1. Crawling with the Chromium browser controlled via `puppeteer`
-2. Scraping with the http library `axios` and parsing with `cheerio`
+2. Scraping with the http library `axios` and parsing with `cheerio`, access to random user agents via `const UserAgent = require('user-agents');`
 
 Function prototype for browsers looks like this:
 
@@ -60,3 +60,4 @@ async function Worker(item, options) {
 + [Scraping of Products on Amazon](amazon.js)
 + [Extract Links from the Google SERP](google.js)
 + [Simple HTTP crawler using axios](http_get.js)
++ [http: Extracting any phone numbers and email addresses from any url](leads.js)
