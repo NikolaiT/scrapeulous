@@ -51,6 +51,10 @@ And the function prototype for plain http requests similar:
  */
 async function Worker(item, options) {
     // use `axios` and `cheerio` here
+
+    // get a random user agent like that:
+    // let user_agent = new UserAgent({ deviceCategory: 'desktop' }).toString();
+    // let headers = {'User-Agent': user_agent};
 }
 ```
 
@@ -60,4 +64,4 @@ async function Worker(item, options) {
 + [Scraping of Products on Amazon](amazon.js)
 + [Extract Links from the Google SERP](google.js)
 + [Simple HTTP crawler using axios](http_get.js)
-+ [http: Extracting any phone numbers and email addresses from any url](leads.js)
++ [Extracting any phone numbers and email addresses from any url with axios](leads.js)

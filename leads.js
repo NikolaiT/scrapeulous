@@ -52,7 +52,10 @@ async function Worker(url, options) {
         }
     };
 
-    await axios.get(url)
+    let user_agent = new UserAgent({ deviceCategory: 'desktop' }).toString();
+    let headers = {'User-Agent': user_agent};
+
+    await axios.get(url, {headers: headers})
         .then(function (response) {
 
             let html = response.data;
