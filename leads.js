@@ -1,5 +1,4 @@
 /**
- *
  * Tries to extract lead information from any website.
  *
  * Algorithm: Loads the start page. Checks for phone numbers and mail addresses.
@@ -23,7 +22,7 @@ async function Worker(url, options) {
         phone_numbers: [],
     };
 
-    let extractLeadInformation = function(html) {
+    function extractLeadInformation(html) {
 
         const phone_number_regex_list = [
             // find generic phone numbers
@@ -32,8 +31,8 @@ async function Worker(url, options) {
             // find german phone numbers: https://www.regextester.com/108528
             /\(?\+\(?49\)?[ ()]?([- ()]?\d[- ()]?){10}/g,
 
-            // https://stackoverflow.com/questions/41538589/regexp-for-german-phone-number-format
-            /(\(?([\d \-\)\–\+\/\(]+){10,}\)?([ .\-–\/]?)([\d]+))/g,
+            // international: https://www.regextester.com/94816
+            /^\+[0-9]?()[0-9](\s|\S)(\d[0-9]{9})$/g
         ];
 
         for (let regex of phone_number_regex_list) {
@@ -50,7 +49,7 @@ async function Worker(url, options) {
         if (email_addresses) {
             result.email_addresses.push(...email_addresses);
         }
-    };
+    }
 
     let user_agent = new UserAgent({ deviceCategory: 'desktop' }).toString();
     let headers = {'User-Agent': user_agent};
@@ -67,9 +66,11 @@ async function Worker(url, options) {
             result.email_addresses = [...new Set(result.email_addresses)];
 
             // extract page title
-
             const $ = cheerio.load(html);
             result.page_title = $('title').text();
+
+        }).catch(function (error) {
+            console.log(error);
         });
 
     return result;
