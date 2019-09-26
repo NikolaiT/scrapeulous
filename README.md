@@ -4,6 +4,16 @@ This repository contains cloud crawler functions used by [scrapeulous.com/cloud-
 
 If you want to add your own cloud crawler function to be used within the crawling infrastructure of scrapeulous, please contact us at [contact](https://scrapeulous.com/contact/).
 
+
+## Examples of Crawler functions
+
++ [Debugging crawlers by getting IP data and http headers](ip_and_headers.js)
++ [Scraping of Products on Amazon](amazon.js)
++ [Extract Links from the Google SERP](google.js)
++ [Simple HTTP crawler using axios](http_get.js)
++ [Extracting any phone numbers and email addresses from any url with raw http requests](leads.js)
++ [Extracting linkedin profile data from any linkedin profile](leads.js)
+
 ## Function Prototype
 
 You can add two types of Cloud Crawler functions:
@@ -57,11 +67,3 @@ async function Worker(item, options) {
     // let headers = {'User-Agent': user_agent};
 }
 ```
-
-## Examples of Crawler functions
-
-+ [Debugging crawlers by getting IP data and http headers](ip_and_headers.js)
-+ [Scraping of Products on Amazon](amazon.js)
-+ [Extract Links from the Google SERP](google.js)
-+ [Simple HTTP crawler using axios](http_get.js)
-+ [Extracting any phone numbers and email addresses from any url with axios](leads.js)
