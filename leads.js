@@ -90,6 +90,7 @@ async function Worker(url, options) {
 
             // extract page title
             const $ = cheerio.load(html);
+
             result.page_title = $('title').text();
             if (result.page_title) {
                 result.page_title = result.page_title.trim();
@@ -97,22 +98,22 @@ async function Worker(url, options) {
 
             if (options.custom_css_selectors) {
 
-                result.custom_css = [];
+                result.custom_css_selectors = [];
 
                 // extract custom css selectors
                 for (let selector of options.custom_css_selectors) {
 
-                    let res = $(selector).text();
+                    let res = $(selector).first().text();
 
                     if (res) {
-                        result.custom_css.push(
+                        result.custom_css_selectors.push(
                             res
                         )
                     }
                 }
 
                 // remove duplicates
-                result.custom_css = [...new Set(result.custom_css)];
+                result.custom_css_selectors = [...new Set(result.custom_css_selectors)];
             }
 
             // custom_regexes is a list of
