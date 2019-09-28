@@ -24,6 +24,8 @@ async function Worker(url, options) {
 
     function extractLeadInformation(html) {
 
+        // parse phone numbers
+
         const phone_number_regex_list = [
             // find generic phone numbers
             /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g,
@@ -32,7 +34,10 @@ async function Worker(url, options) {
             /\(?\+\(?49\)?[ ()]?([- ()]?\d[- ()]?){10}/g,
 
             // international: https://www.regextester.com/94816
-            /^\+[0-9]?()[0-9](\s|\S)(\d[0-9]{9})$/g
+            /^\+[0-9]?()[0-9](\s|\S)(\d[0-9]{9})$/g,
+
+            // dutch phone numbers: https://regexr.com/3aevr
+            /((\+|00(\s|\s?\-\s?)?)31(\s|\s?\-\s?)?(\(0\)[\-\s]?)?|0)[1-9]((\s|\s?\-\s?)?[0-9])((\s|\s?-\s?)?[0-9])((\s|\s?-\s?)?[0-9])\s?[0-9]\s?[0-9]\s?[0-9]\s?[0-9]\s?[0-9]/g
         ];
 
         for (let regex of phone_number_regex_list) {
@@ -44,10 +49,28 @@ async function Worker(url, options) {
             }
         }
 
-        let email_addresses = html.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g);
+        // extract email addresses
 
-        if (email_addresses) {
-            result.email_addresses.push(...email_addresses);
+        const email_addresses_regex_list = [
+
+            /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
+
+            // https://stackoverflow.com/questions/33865113/extract-email-address-from-string-php
+            /[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/g,
+
+            // https://emailregex.com/
+            /(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/igm,
+
+            /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}/igm
+        ];
+
+        for (let regex of email_addresses_regex_list) {
+
+            let emails = html.match(regex);
+
+            if (emails) {
+                result.email_addresses.push(...emails);
+            }
         }
     }
 
@@ -68,6 +91,56 @@ async function Worker(url, options) {
             // extract page title
             const $ = cheerio.load(html);
             result.page_title = $('title').text();
+            if (result.page_title) {
+                result.page_title = result.page_title.trim();
+            }
+
+            if (options.custom_css_selectors) {
+
+                result.custom_css = [];
+
+                // extract custom css selectors
+                for (let selector of options.custom_css_selectors) {
+
+                    let res = $(selector).text();
+
+                    if (res) {
+                        result.custom_css.push(
+                            res
+                        )
+                    }
+                }
+
+                // remove duplicates
+                result.custom_css = [...new Set(result.custom_css)];
+            }
+
+            // custom_regexes is a list of
+            // {pattern: '', flags: ''} objects
+            if (options.custom_regexes) {
+
+                result.custom_regexes = [];
+
+                // extract custom custom_regexes
+                for (let regex of options.custom_regexes) {
+
+                    if (regex.pattern) {
+
+                        var re = new RegExp(regex.pattern, regex.flags);
+
+                        let res = html.match(re);
+                        if (res) {
+
+                            result.custom_regexes.push(
+                                res
+                            )
+                        }
+                    }
+
+                }
+                // remove duplicates
+                result.custom_regexes = [...new Set(result.custom_regexes)];
+            }
 
         }).catch(function (error) {
             console.log(error);
