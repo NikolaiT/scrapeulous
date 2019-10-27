@@ -70,17 +70,23 @@ async function Worker(item, options) {
     await page.waitFor(1000);
 
     // wait until the loading disappears
-    await page.waitForFunction(
-        '!document.querySelector("body").innerText.includes("LOADING...")'
-    );
+    try {
 
-    results.fingerprintjs = await page.evaluate(() => {
-        try {
-            return document.getElementById('demo').querySelector('table').innerText;
-        } catch (e) {
-            return ':(';
-        }
-    });
+      await page.waitForFunction(
+          '!document.querySelector("body").innerText.includes("LOADING...")'
+      );
+
+      results.fingerprintjs = await page.evaluate(() => {
+          try {
+              return document.getElementById('demo').querySelector('table').innerText;
+          } catch (e) {
+              return ':(';
+          }
+      });
+
+    } catch (e) {
+
+    }
 
     return results;
 }
