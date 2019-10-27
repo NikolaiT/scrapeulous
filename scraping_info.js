@@ -14,79 +14,90 @@
 async function Worker(item, options) {
     const results = {};
 
-    await page.goto('https://ipinfo.io/json', {
-        waitLoad: true,
-        waitNetworkIdle: true
-    });
+    try {
+        await page.goto('https://ipinfo.io/json', {
+            waitLoad: true,
+            waitNetworkIdle: true,
+            timeout: 20000,
+        });
 
-    await page.waitFor(500);
+        await page.waitFor(500);
 
-    results.ipdata = await page.evaluate(() => {
-        return JSON.parse(document.querySelector('pre').innerText);
-    });
+        results.ipdata = await page.evaluate(() => {
+            return JSON.parse(document.querySelector('pre').innerText);
+        });
+    } catch (e) {}
 
-    await page.goto('https://httpbin.org/get', {
-        waitLoad: true,
-        waitNetworkIdle: true
-    });
+    try {
+        await page.goto('https://httpbin.org/get', {
+            waitLoad: true,
+            waitNetworkIdle: true,
+            timeout: 20000,
+        });
 
-    await page.waitFor(500);
+        await page.waitFor(500);
 
-    results.headers = await page.evaluate(() => {
-        return JSON.parse(document.querySelector('pre').innerText);
-    });
+        results.headers = await page.evaluate(() => {
+            return JSON.parse(document.querySelector('pre').innerText);
+        });
+    } catch (e) {}
 
     // google location
     // search "what is my location"
-    await page.goto('https://www.google.com/search?q=what+is+my+location', {
-        waitUntil: 'networkidle2',
-    });
-    await page.waitFor(500);
+    try {
 
-    results.google_location = await page.evaluate(() => {
-        let obj = {
-            location_map_serp: null,
-            location_footer: null,
-        };
+        await page.goto('https://www.google.com/search?q=what+is+my+location', {
+            waitUntil: 'networkidle2',
+            timeout: 20000,
+        });
+        await page.waitFor(500);
 
-        try {
-            obj.location_map_serp = document.querySelector('.ibk').innerText;
-        } catch (e) {
-        }
+        results.google_location = await page.evaluate(() => {
+            let obj = {
+                location_map_serp: null,
+                location_footer: null,
+            };
 
-        try {
-            obj.location_footer = document.getElementById('swml').innerText;
-        } catch (e) {
-        }
+            try {
+                obj.location_map_serp = document.querySelector('.ibk').innerText;
+            } catch (e) {
+            }
 
-        return obj;
-    });
+            try {
+                obj.location_footer = document.getElementById('swml').innerText;
+            } catch (e) {
+            }
+
+            return obj;
+        });
+
+    } catch (e) {}
 
     // bot detection test
     // use this open source lib: https://github.com/Valve/fingerprintjs2
-    await page.goto('https://fingerprintjs.com/demo', {
-        waitUntil: 'networkidle0',
-    });
-    await page.waitFor(1000);
 
-    // wait until the loading disappears
     try {
+        await page.goto('https://fingerprintjs.com/demo', {
+            waitUntil: 'networkidle0',
+            timeout: 20000,
+        });
+        await page.waitFor(1000);
 
-      await page.waitForFunction(
-          '!document.querySelector("body").innerText.includes("LOADING...")'
-      );
+        // wait until the loading disappears
 
-      results.fingerprintjs = await page.evaluate(() => {
-          try {
-              return document.getElementById('demo').querySelector('table').innerText;
-          } catch (e) {
-              return ':(';
-          }
-      });
+        await page.waitForFunction(
+            '!document.querySelector("body").innerText.includes("LOADING...")'
+        );
 
-    } catch (e) {
+        results.fingerprintjs = await page.evaluate(() => {
+            try {
+                return document.getElementById('demo').querySelector('table').innerText;
+            } catch (e) {
+                return ':(';
+            }
+        });
 
-    }
+    } catch (e) {}
 
     return results;
 }
