@@ -7,6 +7,7 @@ If you want to add your own cloud crawler function to be used within the crawlin
 
 ## Examples of Crawler functions
 
++ [Obtain useful meta data about location, http headers and location as detected by Google Bot and whether the worker is a bot](scraping_info.js)
 + [Debugging crawlers by getting IP data and http headers](ip_and_headers.js)
 + [Scraping of Products on Amazon](amazon.js)
 + [Extract Links from the Google SERP](google.js)
