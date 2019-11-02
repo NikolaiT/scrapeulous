@@ -21,8 +21,14 @@
 async function Worker(product_link, options) {
 
     await page.goto(product_link, {waitUntil: 'networkidle0'});
-    await page.waitForSelector('#priceblock_ourprice_row');
-    await page.waitFor(500);
+
+    try {
+        await page.waitForSelector('#olp-upd-new-used-freeshipping', {
+            timeout: 15000
+        });
+    } catch (e) {
+        return 'no new/used products';
+    }
 
     // extract product information
     let product_data = await page.evaluate(() => {
