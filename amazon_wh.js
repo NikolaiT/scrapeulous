@@ -41,9 +41,16 @@ async function Worker(product_url, options) {
 
     if (used_product_url) {
 
-        await page.goto(used_product_url, {waitUntil: 'networkidle0'});
-        await page.waitForSelector('#olpOfferListColumn');
-        await page.waitFor(500);
+        try {
+            await page.goto(used_product_url, {
+                waitUntil: 'networkidle2',
+                timeout: 15000
+            });
+            await page.waitForSelector('#olpOfferListColumn', {timeout: 5000});
+            await page.waitFor(500);
+        } catch (e) {
+            return 'cannot load used_product_url';
+        }
 
         warehouse_deals = await page.evaluate(() => {
 
