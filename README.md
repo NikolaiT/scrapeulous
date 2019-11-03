@@ -15,6 +15,9 @@ If you want to add your own cloud crawler function to be used within the crawlin
 + [Extracting any phone numbers and email addresses from any url with raw http requests](leads.js)
 + [Extracting linkedin profile data from any linkedin profile](leads.js)
 
++ [Extracting amazon warehouse deals](amazon_wh.js)
++ [Extracting amazon product data](product_info_amazon.js)
+
 ## Function Prototype
 
 You can add two types of Cloud Crawler functions:
