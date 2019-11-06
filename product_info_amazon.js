@@ -14,16 +14,20 @@
  */
 async function Worker(product_url, options) {
 
-    await page.goto(product_url, {
-        waitUntil: 'networkidle2',
-        timeout: 30000
-    });
+    try {
+        await page.goto(product_url, {
+            waitUntil: 'networkidle2',
+            timeout: 45000
+        });
 
-    await page.waitForSelector('#priceblock_ourprice', {
-        timeout: 15000
-    });
-    
-    await page.waitFor(500);
+        await page.waitForSelector('#priceblock_ourprice', {
+            timeout: 15000
+        });
+        
+        await page.waitFor(500);
+    } catch (e) {
+        return 'cannot load amazon product_url: ' + e.toString();
+    }
 
     // extract product information
     return await page.evaluate(() => {
