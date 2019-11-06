@@ -26,7 +26,7 @@ async function Worker(product_url, options) {
         
         await page.waitFor(500);
     } catch (e) {
-        return 'cannot load amazon product_url: ' + e.toString();
+        return `cannot load amazon product_url ${product_url} with error ${e.toString()}`;
     }
 
     // extract product information

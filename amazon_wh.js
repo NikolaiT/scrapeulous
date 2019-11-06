@@ -49,7 +49,7 @@ async function Worker(product_url, options) {
             await page.waitForSelector('#olpOfferListColumn', {timeout: 10000});
             await page.waitFor(500);
         } catch (e) {
-            return `cannot load used_product_url: ${e.toString()}`;
+            return `cannot load used_product_url ${used_product_url} with error: ${e.toString()}`;
         }
 
         warehouse_deals = await page.evaluate(() => {
