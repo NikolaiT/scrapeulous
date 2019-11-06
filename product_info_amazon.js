@@ -14,11 +14,16 @@
  */
 async function Worker(product_url, options) {
 
-    await page.goto(product_url, {waitUntil: 'networkidle0'});
+    await page.goto(product_url, {
+        waitUntil: 'networkidle2',
+        timeout: 30000
+    });
 
     await page.waitForSelector('#priceblock_ourprice', {
-        timeout: 10000
+        timeout: 15000
     });
+    
+    await page.waitFor(500);
 
     // extract product information
     return await page.evaluate(() => {
@@ -34,6 +39,10 @@ async function Worker(product_url, options) {
         try {
             data.amazon_price = document.getElementById('priceblock_ourprice').textContent;
             data.rrp = document.querySelector('.priceBlockStrikePriceString').textContent;
+        } catch (e) {
+        }
+        
+        try {
             data.vendor = document.getElementById('bylineInfo').textContent;
             data.vendor_link = document.getElementById('bylineInfo').getAttribute('href');
             data.customer_reviews = document.getElementById('averageCustomerReviews').innerText;
@@ -42,7 +51,6 @@ async function Worker(product_url, options) {
 
         try {
             data.new_used_products_link = document.querySelector('#olp-upd-new-used-freeshipping a').getAttribute('href');
-
             // get a absolute url, just in case
             if (data.new_used_products_link) {
                 data.new_used_products_link = document.location.origin + data.new_used_products_link;
