@@ -34,7 +34,7 @@ async function Worker(product_url, options) {
         used_product_url = `https://www.amazon.de/gp/offer-listing/${asin}/ref=dp_olp_used?ie=UTF8&condition=used`;
 
     } else {
-        return 'bad product url';
+        return 'bad product url. No ASIN match.';
     }
 
     let warehouse_deals = null;
@@ -44,12 +44,12 @@ async function Worker(product_url, options) {
         try {
             await page.goto(used_product_url, {
                 waitUntil: 'networkidle2',
-                timeout: 15000
+                timeout: 25000
             });
-            await page.waitForSelector('#olpOfferListColumn', {timeout: 5000});
+            await page.waitForSelector('#olpOfferListColumn', {timeout: 10000});
             await page.waitFor(500);
         } catch (e) {
-            return 'cannot load used_product_url';
+            return `cannot load used_product_url: ${e.toString()}`;
         }
 
         warehouse_deals = await page.evaluate(() => {
@@ -71,7 +71,7 @@ async function Worker(product_url, options) {
                     };
 
                     try {
-                        deal.warehouse_price = node.querySelector('.olpPriceColumn').innerText;
+                        deal.warehouse_price = node.querySelector('.olpPriceColumn span').innerText;
                         deal.prime = node.querySelector('.olpPriceColumn .a-icon-prime') !== null;
                         deal.state = node.querySelector('.olpConditionColumn .olpCondition').innerText;
                         deal.state_description = node.querySelector('.olpConditionColumn .comments').innerText;
