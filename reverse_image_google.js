@@ -5,10 +5,11 @@
  * @param options: Holds all configuration data and options
  */
 async function Worker(key, options) {
-
     let results = {};
 
     let image_path = await storage.storeFile(key);
+
+    console.log(image_path);
 
     await page.goto('https://www.google.de/imghp?hl=de&tab=wi&ogbl', { waitUntil: 'networkidle2' });
     
