@@ -13,9 +13,9 @@
  */
 async function Worker(url, options) {
     var result = null;
-    await axios.get(url)
+    await got(url)
         .then(function (response) {
-            result = response.data;
+            result = response.body;
         });
     return result;
 }
