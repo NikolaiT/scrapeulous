@@ -4,10 +4,13 @@
  * @param item: key to stored image in s3
  * @param options: Holds all configuration data and options
  */
-async function Worker(key, options) {
+class Render extends BrowserWorker {
+
+  async crawl(key) {
+
     let results = {};
 
-    let image_path = await storage.storeFile(key);
+    let image_path = await this.storage.getKey(key);
 
     console.log(image_path);
 
@@ -49,7 +52,7 @@ async function Worker(key, options) {
           let text = c.querySelector('.captionContainer').innerText;
           let imgrefurl = c.querySelector('.captionContainer a').getAttribute('href');
           res.push({
-            href: href,
+            //href: href,
             imgurl: get_imgurl(href),
             imgrefurl: imgrefurl,
             imgtext: text,
@@ -63,4 +66,6 @@ async function Worker(key, options) {
 
     results[key] = image_data;
     return results;
+
+  }
 }
