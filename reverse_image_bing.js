@@ -10,7 +10,7 @@ class Render extends BrowserWorker {
 
     let results = {};
 
-    let image_path = await this.getKey(key);
+    let image_path = await this.getKey(key, {bucket: 'nikolai-scraper-east', region: 'us-east-2'});
 
     console.log(image_path);
 
