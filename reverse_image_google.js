@@ -38,7 +38,7 @@ class Render extends BrowserWorker {
     }
     
     await this.page.waitForNavigation();
-    await this.page.waitForSelector('.rg_bx');
+    await this.page.waitForSelector('#center_col');
     await this.page.waitFor(250);
           
     var image_data = await this.page.evaluate(() => {
@@ -62,7 +62,7 @@ class Render extends BrowserWorker {
       let candidates = document.querySelectorAll('.rg_bx') || [];
       
       if (candidates.length <= 0) {
-        candidates = document.querySelectorAll('[data-ri] > a');
+        candidates = document.querySelectorAll('div[data-ri]');
       }
       
       console.log(candidates.length);
@@ -71,7 +71,7 @@ class Render extends BrowserWorker {
         let c = candidates[i];
         let obj = {rank: i+1};
         try {
-          let image_node = c.querySelector('a.rg_l');
+          let image_node = c.querySelector('a');
           if (image_node) {
             let href = image_node.getAttribute('href');
             obj.imgurl = get_imgurl(href);
