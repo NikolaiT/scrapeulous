@@ -37,7 +37,6 @@ class Owler extends BrowserWorker {
     });
 
     await this.page.goto('https://www.owler.com/company/google');
-    await this.page.waitFor(5000);
 
     return result;
   }
