@@ -61,30 +61,56 @@ class Render extends BrowserWorker {
       let res = [];
       let candidates = document.querySelectorAll('.rg_bx') || [];
       
-      if (candidates.length <= 0) {
+      if (!candidates.length) {
         candidates = document.querySelectorAll('div[data-ri]');
       }
-      
-      console.log(candidates.length);
-      
+
+      let counter = 0;
+
       for (let i = 0; i < candidates.length; i++) {
         let c = candidates[i];
-        let obj = {rank: i+1};
+        let obj = {rank: null, alt: false};
         try {
           let image_node = c.querySelector('a');
           if (image_node) {
             let href = image_node.getAttribute('href');
-            obj.imgurl = get_imgurl(href);
-            obj.imgrefurl = get_imgrefurl(href);
-            obj.imgtext = image_node.parentNode.innerText;
+            if (href) {
+              obj.imgurl = get_imgurl(href);
+              obj.imgrefurl = get_imgrefurl(href);
+              obj.imgtext = image_node.parentNode.innerText;
+            }
           }
-          
+
+          if (!obj.imgurl || !obj.imgrefurl) {
+            // try to get alternative results
+            let img_node = c.querySelector('img');
+            if (img_node) {
+              try {
+                obj.imgurl = img_node.getAttribute('data-iurl');
+                obj.alt = true;
+              } catch (e) {}
+            }
+
+            let second_a = c.querySelector('a:nth-child(2)');
+            if (second_a) {
+              try {
+                obj.imgrefurl = second_a.getAttribute('href');
+                if (obj.imgrefurl === '#') {
+                  obj.imgrefurl = null;
+                }
+                obj.imgtext = second_a.innerText;
+              } catch (e) {}
+            }
+          }
+
           if (obj.imgurl || obj.imgrefurl) {
+            counter++;
+            obj.rank = counter;
             res.push(obj);
           }
 
         } catch (e) {
-          console.log(e.toString());
+          console.log(e);
         }
       }
       return res;
