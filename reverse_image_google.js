@@ -38,7 +38,7 @@ class Render extends BrowserWorker {
     }
     
     await this.page.waitForNavigation();
-    await this.page.waitForSelector('#center_col');
+    await this.page.waitForSelector('div[data-ri] a', {timeout: 15000});
     await this.page.waitFor(250);
           
     var image_data = await this.page.evaluate(() => {
