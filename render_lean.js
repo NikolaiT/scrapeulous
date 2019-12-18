@@ -1,10 +1,11 @@
 class RenderProxyLean extends BrowserWorker {
 
   async crawl(url) {
-    await this.get_proxy({ filter: {
-      whitelisted: true,
-      rotating: false,
-    }});
+    await this.get_proxy(
+      {
+        filter: { whitelisted: true, rotating: false }, // only proxies that are whitelisted
+        change: 8, // change proxy on failure or every nth item
+      });
 
     await this.page.goto(url, {
       waitUntil: 'networkidle2', // wait until there are maximally 2 connections left
