@@ -1,5 +1,4 @@
 class ProxyGet extends HttpWorker {
-
   async crawl(url) {
     await this.get_proxy(
       {
@@ -11,5 +10,4 @@ class ProxyGet extends HttpWorker {
     let response = await this.Got(url);
     return response.body;
   }
-
 }
