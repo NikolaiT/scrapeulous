@@ -9,7 +9,6 @@ class RenderProxyLean extends BrowserWorker {
 
     await this.page.goto(url, {
       waitUntil: 'networkidle2', // wait until there are maximally 2 connections left
-      timeout: 30000, // don't wait forever, it's better to fail than to consume too much resources
     });
 
     // there must be a better way
