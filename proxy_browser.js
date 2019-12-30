@@ -2,7 +2,7 @@ class RenderProxy extends BrowserWorker {
   async crawl(url) {
     await this.get_proxy(
       {
-        filter: { whitelisted: true, rotating: false },
+        filter: { whitelisted: true, rotating: false, provider: 'cosmoproxy' },
         change: 1, // change proxy on failure or every 1th item
       });
 
