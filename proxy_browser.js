@@ -15,7 +15,7 @@ class RenderProxy extends BrowserWorker {
       'https://www.twitter.com/'
     ];
     const rand_referer = referer[Math.floor(Math.random() * referer.length)];
-    await page.setExtraHTTPHeaders({ 'referer': rand_referer });
+    await this.page.setExtraHTTPHeaders({ 'referer': rand_referer });
 
     await this.page.goto(url, {
       waitUntil: 'networkidle2', // wait until there are maximally 2 connections left
