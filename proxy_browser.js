@@ -3,7 +3,7 @@ class RenderProxy extends BrowserWorker {
     await this.get_proxy(
       {
         filter: { whitelisted: true, rotating: false, provider: 'cosmoproxy' },
-        change: 5, // change proxy on failure or every 1th item
+        change: 3, // change proxy on failure or every 1th item
       });
       
     const referer = [
