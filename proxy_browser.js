@@ -5,7 +5,7 @@ class RenderProxy extends BrowserWorker {
         filter: { whitelisted: true, rotating: false, provider: 'cosmoproxy' },
         change: 5, // change proxy on failure or every 1th item
       });
-      
+
     const referer = [
       'https://www.google.com/',
       'https://www.bing.com/',
