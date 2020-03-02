@@ -4,7 +4,7 @@
  * @param keyword: The keyword that is requested on Amazon
  * @param options: Holds all configuration data and options
  */
-async function Worker(keyword, options) {
+async function Amazon extends BrowserWorker {
     await page.goto('https://www.amazon.com/');
     await page.waitForSelector('#nav-search');
     await page.waitFor(200);

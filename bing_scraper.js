@@ -32,16 +32,17 @@ class BingScraper extends BrowserWorker {
       num_pages = this.options.num_pages;
     }
 
-    let results = {};
+    let results = [];
 
-    for (let page_num = 0; page_num < num_pages; page_num++) {
-      if (page_num === 0) {
+    for (let page_num = 1; page_num <= num_pages; page_num++) {
+      if (page_num === 1) {
         await this.load_start_page();
         await this.search_keyword(keyword);
       }
       await this.wait_for_results();
-      results[page_num] = await this.parse(keyword);
-      results[page_num].page_num = page_num + 1;
+      let parsed = await this.parse(keyword);
+      parsed.page_num = page_num;
+      results.push(parsed);
       await this.next_page();
     }
 

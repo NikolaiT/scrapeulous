@@ -4,9 +4,6 @@ class Render extends BrowserWorker {
       waitUntil: 'networkidle2', // two open connections is okay
     });
 
-    return await this.clean_html({
-      tags: ['script', 'style'],
-      use_regex: false
-    });
+    return await this.page.content();
   }
 }
