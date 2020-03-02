@@ -27,7 +27,6 @@
  * @param this.options: Holds all configuration data and options for the Google Scraper
  */
 class GoogleScraper extends BrowserWorker {
-
   async crawl(keyword) {
     let num_pages = 1;
     if (this.options && this.options.num_pages) {

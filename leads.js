@@ -11,14 +11,9 @@
  * @param: options.custom_regexes: List of custom regexes to find lead information
  * @param: options.custom_css_selectors: List of custom css selectors
  *
- * @TODO: If not found: Tries to find interesting links on the site such as:
- * - contact
- * - about
- * - impressum
- * - imprint
+ * @TODO: If not found: Tries to find interesting links on the site such as: contact/about/impressum
  */
 class Leads extends HttpWorker {
-
   async crawl(url) {
     let result = {
       page_title: '',
