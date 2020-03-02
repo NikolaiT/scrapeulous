@@ -1,73 +1,86 @@
 # CloudCrawler
 
-This repository contains cloud crawler functions used by [scrapeulous.com/cloud-crawler](https://scrapeulous.com/cloud-crawler).
+This repository contains cloud crawler functions used by [scrapeulous.com](https://scrapeulous.com/).
 
-If you want to add your own cloud crawler function to be used within the crawling infrastructure of scrapeulous, please contact us at [contact](https://scrapeulous.com/contact/).
+If you want to add your own crawler function to be used within the crawling infrastructure of scrapeulous, please contact us at [contact](https://scrapeulous.com/contact/).
 
 
 ## Examples of Crawler functions
 
-+ [Obtain useful meta data about location, http headers and location as detected by Google Bot and whether the worker is a bot](scraping_info.js)
-+ [Debugging crawlers by getting IP data and http headers](ip_and_headers.js)
-+ [Scraping of Products on Amazon](amazon.js)
-+ [Extract Links from the Google SERP](google.js)
-+ [Simple HTTP crawler using axios](http_get.js)
-+ [Extracting any phone numbers and email addresses from any url with raw http requests](leads.js)
-+ [Extracting linkedin profile data from any linkedin profile](leads.js)
-
++ [Scraping of Product Metadata on Amazon](amazon.js)
++ [Extract the SERP from Google](google_scraper.js)
++ [Extract the SERP from Bing](bing_scraper.js)
++ [Simple HTTP crawler making plain requests](http.js)
++ [Leads: Extracting phone numbers and email addresses from any url with raw http requests](leads.js)
++ [Extracting linkedin profile data from any linkedin profile](linkedin.js)
 + [Extracting amazon warehouse deals](amazon_wh.js)
 + [Extracting amazon product data](product_info_amazon.js)
 
-## Function Prototype
+## Crawling Class Prototype
 
 You can add two types of Cloud Crawler functions:
 
-1. Crawling with the Chromium browser controlled via `puppeteer`
-2. Scraping with the http library `axios` and parsing with `cheerio`, access to random user agents via `const UserAgent = require('user-agents');`
+1. For crawling with the chrome browser controlled via `puppeteer`, use the `BrowserWorker` base class
+2. Scraping with the http library `got` and parsing with `cheerio`, use the `HttpWorker` base class
 
 Function prototype for browsers looks like this:
 
 ```js
 /**
  *
- * The worker function contains your scraping/crawling logic.
+ * The BrowserWorker class contains your scraping/crawling logic.
  *
- * Each Worker() function is executed on a distributed unique machine
+ * Each BrowserWorker class must declare a crawl() function, which is executed on a distributed unique machine
  * with dedicated CPU, memory and browser instance. A unique IP is not guaranteed,
  * but it is the norm.
  *
- * Scraping workers time out after 120 seconds. So the function
+ * Scraping workers time out after 200 seconds. So the function
  * should return before this hard limit.
  *
  * Each Worker has a `page` param: A puppeteer like page object. See here:
  * https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#class-page
- *
- * @param item: The item that this Worker callback is responsible for
- * @param options: Holds all configuration data and options
  */
-async function Worker(item, options) {
-    // implement your crawling logic with `page`, a puppeteer handle
+class Worker extends BrowserWorker {
+	/**
+	 *
+	 * Implement your crawling logic here. You have access to `this.page` here
+	 * with a fully loaded browser according to configuration.
+	 *
+	 * @param item: The item that this crawl function makes progress with
+	 */
+	async function crawl(item) {
+
+	}
 }
 ```
 
-And the function prototype for plain http requests similar:
+And the function prototype for `HttpWorker` instances looks similar:
 
 ```js
 /**
  *
- * The worker function contains your scraping/crawling logic.
+ * The HttpWorker class contains your scraping/crawling logic.
  *
- * The function allows to access data with `axios` and
- * parse html with `cheerio`.
+ * Each HttpWorker class must declare a crawl() function, which is executed on a distributed unique machine
+ * with dedicated CPU, memory and browser instance. A unique IP is not guaranteed,
+ * but it is the norm.
  *
- * @param item: The item that this Worker callback is responsible for
- * @param options: Holds all configuration data and options
+ * Scraping workers time out after 200 seconds. So the function
+ * should return before this hard limit.
+ *
+ * The class has access to the `this.Got` http library and `this.Cheerio` for parsing html documents.
+ * https://github.com/sindresorhus/got
  */
-async function Worker(item, options) {
-    // use `axios` and `cheerio` here
+class Worker extends HttpWorker {
+	/**
+	 *
+	 * Implement your crawling logic here. You have access to `this.Got` here
+	 * with a powerful http client library.
+	 *
+	 * @param item: The item that this crawl function makes progress with
+	 */
+	async function crawl(item) {
 
-    // get a random user agent like that:
-    // let user_agent = new UserAgent({ deviceCategory: 'desktop' }).toString();
-    // let headers = {'User-Agent': user_agent};
+	}
 }
 ```
