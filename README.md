@@ -1,11 +1,11 @@
-# CloudCrawler
+# Cloud Crawler
 
 This repository contains cloud crawler functions used by [scrapeulous.com](https://scrapeulous.com/).
 
 If you want to add your own crawler function to be used within the crawling infrastructure of scrapeulous, please contact us at [contact](https://scrapeulous.com/contact/).
 
 
-## Examples of Crawler functions
+## Examples of crawler functions
 
 + [Scraping of Product Metadata on Amazon](amazon.js)
 + [Extract the SERP from Google](google_scraper.js)
@@ -16,7 +16,7 @@ If you want to add your own crawler function to be used within the crawling infr
 + [Extracting amazon warehouse deals](amazon_wh.js)
 + [Extracting amazon product data](product_info_amazon.js)
 
-## Crawling Class Prototype
+## Crawling class description
 
 You can add two types of Cloud Crawler functions:
 
