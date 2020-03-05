@@ -1,41 +1,58 @@
 /**
- * Scrape amazon product data.
+ * @author Nikolai Tschacher
+ * @version 1.0
+ * @last_modified March 2020
+ * @website: scrapeulous.com
  *
- * @param keyword: The keyword that is requested on Amazon
- * @param options: Holds all configuration data and options
+ * Searches a product on amazon and obtains product meta data
+ * such as price and asin.
+ *
+ * Supported options:
+ *
+ * @param options.amazon_domain: string, the domain of Amazon
+ * @param keyword: The keyword that is searched on Amazon
  */
-async function Amazon extends BrowserWorker {
-    await page.goto('https://www.amazon.com/');
-    await page.waitForSelector('#nav-search');
-    await page.waitFor(200);
+class Amazon extends BrowserWorker {
+  async crawl(keyword) {
+    let amazon_domain = this.options.amazon_domain || 'www.amazon.com';
+    await this.page.goto(`https://${amazon_domain}/`);
+    await this.page.waitForSelector('#nav-search');
+    await this.page.waitFor(200);
 
-    // search product
-    const input = await page.$('input[name="field-keywords"]');
-    await page.evaluate((value) => {
-        document.querySelector('input[name="field-keywords"]').value = value;
+    const input = await this.page.$('input[name="field-keywords"]');
+    await this.page.evaluate((value) => {
+      document.querySelector('input[name="field-keywords"]').value = value;
     }, keyword);
     await input.focus();
-    await page.keyboard.press("Enter");
-    await page.waitForSelector('.s-result-list');
-    await page.waitFor(1000);
+    await this.page.keyboard.press("Enter");
+    await this.page.waitForSelector('.s-result-list');
+    await this.page.waitFor(500);
 
     // parse product information
-    return await page.evaluate(() => {
-        let products =  document.querySelectorAll('.s-result-list .s-result-item');
-        const data = [];
-        products.forEach((el) => {
-            let obj = {};
-            let linkElement = el.querySelector('div > h2 > a');
-            try {
-                if (linkElement) {
-                    obj.url = linkElement.getAttribute('href');
-                    obj.title = linkElement.querySelector('span').innerText;
-                }
-                obj.price = el.querySelector('.a-price span').innerText;
-                data.push(obj);
-            } catch (e) {
-            }
-        });
-        return data;
+    return await this.page.evaluate(() => {
+      let products =  document.querySelectorAll('.s-result-list .s-result-item');
+      const data = [];
+      products.forEach((el) => {
+        let obj = {
+          asin:  el.getAttribute('data-asin'),
+        };
+        let linkElement = el.querySelector('div > h2 > a');
+        try {
+          if (linkElement) {
+            obj.url = linkElement.getAttribute('href');
+            obj.title = linkElement.querySelector('span').innerText;
+          }
+          obj.price = el.querySelector('.a-price span').innerText;
+          try {
+            obj.stars = el.querySelector('.a-size-small [aria-label]:nth-child(1)').innerText.trim();
+            obj.num_ratings = el.querySelector('.a-size-small [aria-label]:nth-child(2)').innerText.trim();
+          } catch (err) {
+          }
+          data.push(obj);
+        } catch (e) {
+        }
+      });
+      return data;
     });
+  }
 }

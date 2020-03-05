@@ -4,6 +4,23 @@ This repository contains cloud crawler functions used by [scrapeulous.com](https
 
 If you want to add your own crawler function to be used within the crawling infrastructure of scrapeulous, please contact us at [contact](https://scrapeulous.com/contact/).
 
+## Quickstart
+
+Here is how you can test all crawling functions locally.
+
+This repository contains a `test_runner` program.
+
+For example, execute the Google Scraper with:
+
+```bash
+node test_runner.js google_scraper.js '["keyword 1",]'
+```
+
+or run the amazon crawler with:
+
+```bash
+node test_runner.js amazon.js '["Notebook",]'
+```
 
 ## Examples of crawler functions
 
@@ -41,16 +58,16 @@ Function prototype for browsers looks like this:
  * https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#class-page
  */
 class Worker extends BrowserWorker {
-	/**
-	 *
-	 * Implement your crawling logic here. You have access to `this.page` here
-	 * with a fully loaded browser according to configuration.
-	 *
-	 * @param item: The item that this crawl function makes progress with
-	 */
-	async function crawl(item) {
-
-	}
+  /**
+  *
+  * Implement your crawling logic here. You have access to `this.page` here
+  * with a fully loaded browser according to configuration.
+  *
+  * @param item: The item that this crawl function makes progress with
+  */
+  async function crawl(item) {
+  
+  }
 }
 ```
 
@@ -72,15 +89,15 @@ And the function prototype for `HttpWorker` instances looks similar:
  * https://github.com/sindresorhus/got
  */
 class Worker extends HttpWorker {
-	/**
-	 *
-	 * Implement your crawling logic here. You have access to `this.Got` here
-	 * with a powerful http client library.
-	 *
-	 * @param item: The item that this crawl function makes progress with
-	 */
-	async function crawl(item) {
-
-	}
+  /**
+  *
+  * Implement your crawling logic here. You have access to `this.Got` here
+  * with a powerful http client library.
+  *
+  * @param item: The item that this crawl function makes progress with
+  */
+  async function crawl(item) {
+  
+  }
 }
 ```
