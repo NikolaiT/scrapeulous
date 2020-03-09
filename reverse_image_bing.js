@@ -1,10 +1,28 @@
 /**
- * Reverse image search on Bing.
+ * Reverse image search on Bing. Goes to the similar images
+ * and scrapes all image metadata such as `imgurl` and `imgrefurl`.
  *
  * @param item: key to stored image in s3
  * @param options: Holds all configuration data and options
  */
 class Render extends BrowserWorker {
+
+  /**
+   * uploadFile() is broken in 2.1.0 and 2.1.1
+   * Solution: https://github.com/puppeteer/puppeteer/issues/5420
+   *
+   * @param selector: the file input selector
+   * @param file_path: an absolute path to the local file to be uploaded
+   * @returns {Promise<void>}
+   */
+  async upload_file(selector, file_path) {
+    const uploadInput = await this.page.$(selector);
+    await uploadInput.uploadFile(file_path);
+    await this.page.evaluate((inputSelector) => {
+      document.querySelector(inputSelector).dispatchEvent(new Event('change', { bubbles: true }));
+    }, selector);
+  }
+
   async crawl(key) {
     let results = {};
 
@@ -14,34 +32,18 @@ class Render extends BrowserWorker {
       region: 'us-east-2'
     });
 
-    await this.page.goto('https://www.bing.com/images?', { waitUntil: 'networkidle2' });
-      
+    await this.page.goto('https://www.bing.com/images?', { waitUntil: 'networkidle0' });
     await this.page.waitForSelector('#sbi_b');
-
     await this.page.click('#sbi_b');
-
-    await this.page.waitFor(250);
-
     await this.page.waitForSelector('#sb_fileinput');
-
-    await this.page.waitFor(250);
-
-    const input = await this.page.$('#sb_fileinput');
-
-    await input.uploadFile(image_path);
-
-    await this.page.waitFor(250);
-
-    // // doing click on button to trigger upload file
-    // await this.page.waitForSelector('#upload');
-    // await this.page.evaluate(() => document.getElementById('upload').click());
+    await this.page.waitFor(100);
+    await this.upload_file('#sb_fileinput', image_path);
 
     await this.page.waitForNavigation();
     await this.page.waitForSelector('#i_results');
     await this.page.waitFor(250);
 
     let image_data = await this.page.evaluate(() => {
-      
       function get_imgurl(url) {
           const regex = /mediaurl=(.*)/gm;
           let match = regex.exec(url);

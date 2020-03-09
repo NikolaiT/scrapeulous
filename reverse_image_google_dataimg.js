@@ -21,26 +21,6 @@ class Render extends BrowserWorker {
     }, selector);
   }
 
-  async filterLinks() {
-    this.page.evaluate(() => {
-      let results = [];
-      let links = document.getElementsByTagName('a');
-      links = Array.from(links);
-      links.forEach((link) => {
-        let href = link.getAttribute('href');
-        if (href) {
-          if (href.includes('imgurl=')) {
-            const regex = /imgurl=(.*?)&/gm;
-            let match = regex.exec(href);
-            if (match !== null) {
-              results.push(decodeURIComponent(match[1]));
-            }
-          }
-        }
-      });
-    });
-  }
-
   async crawl(key) {
     let results = {};
 
@@ -139,6 +119,11 @@ class Render extends BrowserWorker {
                 obj.imgtext = second_a.innerText;
               } catch (e) {}
             }
+          }
+
+          if (!obj.imgurl) {
+            let img_node = c.querySelector('a img');
+            obj.imgurl = img_node.getAttribute('src');
           }
 
           if (obj.imgurl || obj.imgrefurl) {

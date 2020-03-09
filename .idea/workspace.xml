@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="02ba9c43-ce18-4642-9681-3b462de8b0d8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/reverse_image_google_dataimg.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/reverse_image_bing.js" beforeDir="false" afterPath="$PROJECT_DIR$/reverse_image_bing.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/reverse_image_google.js" beforeDir="false" afterPath="$PROJECT_DIR$/reverse_image_google.js" afterDir="false" />
     </list>
@@ -40,9 +42,15 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode.JavaScript" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -57,7 +65,8 @@
       <workItem from="1583408204912" duration="4694000" />
       <workItem from="1583697935907" duration="8928000" />
       <workItem from="1583751082591" duration="2248000" />
-      <workItem from="1583756524176" duration="2551000" />
+      <workItem from="1583756524176" duration="3153000" />
+      <workItem from="1583775718441" duration="6995000" />
     </task>
     <servers />
   </component>
