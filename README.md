@@ -22,6 +22,18 @@ or run the amazon crawler with:
 node test_runner.js amazon.js '["Notebook",]'
 ```
 
+or the reverse image crawler with:
+
+```bash
+node test_runner.js reverse_image_google_url.js '["https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Mohamed_Atta.jpg/220px-Mohamed_Atta.jpg", "https://aldianews.com/sites/default/files/styles/article_image/public/articles/ISISAmenaza.jpg?itok=u7Nhc41a", "https://www.hawarnews.com/en/uploads/2019/02/20/140916_130533_fb29e5f0-01b2-4bea-917d-770c3453d2d6.jpg", "https://upload.wikimedia.org/wikipedia/en/thumb/3/34/Mohammed_Atef.jpg/220px-Mohammed_Atef.jpg", "https://media.newyorker.com/photos/590965226552fa0be682ed23/master/pass/Filkins-Khalid-Sheikh-Mohammed-Torture-Report.jpg"]'
+```
+
+or 
+
+```bash
+node test_runner.js reverse_image_bing_url.js '["https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Mohamed_Atta.jpg/220px-Mohamed_Atta.jpg", "https://aldianews.com/sites/default/files/styles/article_image/public/articles/ISISAmenaza.jpg?itok=u7Nhc41a", "https://www.hawarnews.com/en/uploads/2019/02/20/140916_130533_fb29e5f0-01b2-4bea-917d-770c3453d2d6.jpg", "https://upload.wikimedia.org/wikipedia/en/thumb/3/34/Mohammed_Atef.jpg/220px-Mohammed_Atef.jpg", "https://media.newyorker.com/photos/590965226552fa0be682ed23/master/pass/Filkins-Khalid-Sheikh-Mohammed-Torture-Report.jpg"]'
+```
+
 ## Examples of crawler functions
 
 + [Scraping of Product Metadata on Amazon](amazon.js)

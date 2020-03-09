@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const clipboardy = require('clipboardy');
 
 class Worker {
   constructor() {
@@ -35,9 +36,12 @@ class BrowserWorker extends Worker {
   }
 
   async setup() {
+    this.clipboardy = clipboardy;
     const puppeteer = require('puppeteer');
     this.browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
+      defaultViewport: null,
+      args: ['--start-maximized'],
     });
     this.page = await this.browser.newPage();
   }

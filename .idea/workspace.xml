@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="02ba9c43-ce18-4642-9681-3b462de8b0d8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/test_runner.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reverse_image_bing_url.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reverse_image_google_url.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazon.js" beforeDir="false" afterPath="$PROJECT_DIR$/amazon.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_runner.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_runner.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +58,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1583408200426</updated>
-      <workItem from="1583408204912" duration="4082000" />
+      <workItem from="1583408204912" duration="4694000" />
+      <workItem from="1583697935907" duration="6768000" />
     </task>
     <servers />
   </component>
@@ -66,6 +71,10 @@
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2369" y="176" width="1022" height="732" key="SettingsEditor/0.25.1920.1055/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583410451384" />
+    <state x="2403" y="142" width="950" height="800" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1583717848861">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2403" y="142" width="950" height="800" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.25.1920.1055/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583717848861" />
     <state x="2543" y="239" width="672" height="678" key="search.everywhere.popup" timestamp="1583408373549">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
