@@ -5,33 +5,42 @@
  * @param options: Holds all configuration data and options
  */
 class Render extends BrowserWorker {
-
   async crawl(key) {
-
     let results = {};
 
-    let image_path = await this.getKey(key, {"bucket": 'nikolai-scraper-east', "region": 'us-east-2'});
-
-    console.log(image_path);
+    let image_path = await this.getKey({
+      key: key,
+      bucket: 'crawling-tests',
+      region: 'us-east-2'
+    });
 
     await this.page.goto('https://www.bing.com/images?', { waitUntil: 'networkidle2' });
       
-    await this.page.waitForSelector('#sb_sbi');
+    await this.page.waitForSelector('#sbi_b');
 
-    await this.page.click('#sb_sbi img');
+    await this.page.click('#sbi_b');
 
-    await this.page.waitFor(500);
+    await this.page.waitFor(250);
 
     await this.page.waitForSelector('#sb_fileinput');
 
-    const input = await this.page.$('input#sb_fileinput');
+    await this.page.waitFor(250);
+
+    const input = await this.page.$('#sb_fileinput');
+
     await input.uploadFile(image_path);
+
+    await this.page.waitFor(250);
+
+    // // doing click on button to trigger upload file
+    // await this.page.waitForSelector('#upload');
+    // await this.page.evaluate(() => document.getElementById('upload').click());
 
     await this.page.waitForNavigation();
     await this.page.waitForSelector('#i_results');
-    await this.page.waitFor(500);
+    await this.page.waitFor(250);
 
-    var image_data = await this.page.evaluate(() => {
+    let image_data = await this.page.evaluate(() => {
       
       function get_imgurl(url) {
           const regex = /mediaurl=(.*)/gm;
@@ -64,6 +73,5 @@ class Render extends BrowserWorker {
 
     results[key] = image_data;
     return results;
-
   }
 }

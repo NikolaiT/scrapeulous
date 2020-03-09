@@ -8,9 +8,11 @@ class Render extends BrowserWorker {
   async crawl(key) {
     let results = {};
 
-    let image_path = await this.getKey(key, {"bucket": 'nikolai-scraper-east', "region": 'us-east-2'});
-
-    console.log(image_path);
+    let image_path = await this.getKey({
+      key: key,
+      bucket: 'crawling-tests',
+      region: 'us-east-2'
+    });
 
     await this.page.goto('https://www.google.com/imghp?hl=en&tab=wi&ogbl', { waitUntil: 'networkidle2' });
     
@@ -18,17 +20,22 @@ class Render extends BrowserWorker {
     
     await this.page.click('[aria-label="Search by image"]');
     
-    await this.page.waitFor(500);
+    await this.page.waitFor(250);
     
     await this.page.click('#qbug a');
     await this.page.waitForSelector('#qbfile');
     
     const input = await this.page.$('input#qbfile');
     await input.uploadFile(image_path);
+
+    await this.page.waitFor(250);
+    // // doing click on button to trigger upload file
+    // await this.page.waitForSelector('#qbfile');
+    // await this.page.evaluate(() => document.getElementById('qbfile').click());
     
     await this.page.waitForNavigation();
     await this.page.waitForSelector('#rcnt');
-    await this.page.waitFor(350);
+    await this.page.waitFor(250);
     
     // click on the link to get similar pictures
     try {
