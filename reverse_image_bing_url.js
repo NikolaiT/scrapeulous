@@ -5,23 +5,45 @@
  * @param options: Holds all configuration data and options
  */
 class Render extends BrowserWorker {
-  async crawl(url) {
-    this.clipboardy.writeSync(url);
-    let results = {};
-    await this.page.goto('https://www.bing.com/images?', { waitUntil: 'networkidle2' });
-    await this.page.waitForSelector('#sbi_b');
-    await this.page.click('#sbi_b');
-    await this.page.waitFor(250);
-    await this.page.click('#sb_pastepn');
-    await this.page.waitFor(250);
-    // paste clipboard contents
+  async copy() {
+    await this.page.keyboard.down('Control');
+    await this.page.keyboard.press('KeyC');
+    await this.page.keyboard.up('Control');
+  }
+
+  async paste() {
     await this.page.keyboard.down('Control');
     await this.page.keyboard.press('KeyV');
     await this.page.keyboard.up('Control');
+  }
+
+  async tripleClick() {
+    await this.page.mouse.down({clickCount: 1});
+    await this.page.mouse.down({clickCount: 2});
+    await this.page.mouse.down({clickCount: 3});
+  }
+
+  async crawl(url) {
+    let results = {};
+    await this.page.goto('https://www.bing.com/images?', { waitUntil: 'networkidle2' });
+
+    await this.page.$eval('#sb_form_q', (el, value) => el.value = value, url);
+
+    await this.page.click('#sb_form_q');
+    await this.tripleClick();
+    await this.copy();
+
+    await this.page.waitForSelector('#sbi_b');
+    await this.page.click('#sbi_b');
+    await this.page.waitFor(100);
+    await this.page.click('#sb_pastepn');
+    await this.page.waitFor(100);
+    // paste clipboard contents
+    await this.paste();
 
     await this.page.waitForNavigation();
     await this.page.waitForSelector('#i_results');
-    await this.page.waitFor(250);
+    await this.page.waitFor(100);
 
     let image_data = await this.page.evaluate(() => {
       function get_imgurl(url) {
