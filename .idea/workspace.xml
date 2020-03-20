@@ -4,8 +4,6 @@
     <list default="true" id="02ba9c43-ce18-4642-9681-3b462de8b0d8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/leads.js" beforeDir="false" afterPath="$PROJECT_DIR$/leads.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_runner.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_runner.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +65,8 @@
       <workItem from="1583756524176" duration="3153000" />
       <workItem from="1583775718441" duration="7599000" />
       <workItem from="1584722638463" duration="4447000" />
-      <workItem from="1584733021768" duration="978000" />
+      <workItem from="1584733021768" duration="1811000" />
+      <workItem from="1584740349214" duration="110000" />
     </task>
     <servers />
   </component>

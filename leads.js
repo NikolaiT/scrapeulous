@@ -47,10 +47,12 @@ class Leads extends HttpWorker {
       $($('a')).each(function(i, link) {
         let link_text = $(link).text();
         let href = $(link).attr('href');
-        all_links.push({
-          link: href,
-          text: link_text
-        });
+        if (href && href.trim()) {
+          all_links.push({
+            link: href,
+            text: link_text
+          });
+        }
       });
 
       for (let obj of all_links) {
