@@ -26,11 +26,12 @@ class Leads extends HttpWorker {
 
     let user_agent = new this.UserAgent({deviceCategory: 'desktop'}).toString();
     let headers = {'User-Agent': user_agent};
-    let to_visit = [url];
+    let to_visit = [url, ];
 
     let response = await this.Got(to_visit.pop(), {headers: headers});
     let html = response.body;
-    const $ = this.Cheerio.load(html);
+    let $ = this.Cheerio.load(html);
+    this.extractLeadInformation(html, result, $);
 
     // extract page title
     result.page_title = $('title').contents().first().text();

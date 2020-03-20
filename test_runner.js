@@ -102,7 +102,7 @@ class TestRunner {
   let crawler = process.argv[2] || 'http.js';
   let options = {};
   if (crawler === 'leads.js') {
-    options.advanced = true;
+    options.advanced = false;
   }
 
   console.log(`Running crawler ${crawler} with options ${JSON.stringify(options)}`);
