@@ -2,14 +2,15 @@
 
 const fs = require('fs');
 const clipboardy = require('clipboardy');
+const UserAgent = require('user-agents');
 
 class Worker {
-  constructor() {
+  constructor(options) {
     this.logger = {
       info: console.log,
       error: console.error
-    }
-    this.options = {};
+    };
+    this.options = options || {};
   }
 
   async sleep(ms) {
@@ -18,11 +19,12 @@ class Worker {
 }
 
 class HttpWorker extends Worker {
-  constructor() {
-    super();
+  constructor(options) {
+    super(options);
   }
 
   async setup() {
+    this.UserAgent = UserAgent;
     this.Got = require('got');
     this.Cheerio = require('cheerio');
   }
@@ -31,11 +33,12 @@ class HttpWorker extends Worker {
 }
 
 class BrowserWorker extends Worker {
-  constructor() {
-    super();
+  constructor(options) {
+    super(options);
   }
 
   async setup() {
+    this.UserAgent = UserAgent;
     this.clipboardy = clipboardy;
     const puppeteer = require('puppeteer');
     this.browser = await puppeteer.launch({
@@ -53,8 +56,9 @@ class BrowserWorker extends Worker {
 }
 
 class TestRunner {
-  constructor(crawler, items) {
+  constructor(crawler, items, options) {
     this.items = items;
+    this.options = options;
 
     try {
       this.crawler_code = fs.readFileSync(crawler);
@@ -73,7 +77,7 @@ class TestRunner {
     }
 
     let Worker = eval(`(${this.crawler_code})`);
-    let instance = new Worker();
+    let instance = new Worker(this.options);
     await instance.setup();
 
     let results = [];
@@ -95,7 +99,15 @@ class TestRunner {
     process.exit(-1);
   }
 
-  let tester = new TestRunner(process.argv[2] || 'http.js', items);
+  let crawler = process.argv[2] || 'http.js';
+  let options = {};
+  if (crawler === 'leads.js') {
+    options.advanced = true;
+  }
+
+  console.log(`Running crawler ${crawler} with options ${JSON.stringify(options)}`);
+
+  let tester = new TestRunner(crawler, items, options);
   let results = await tester.run();
   console.dir(results, { depth: null });
 })();

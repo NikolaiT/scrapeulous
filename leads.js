@@ -1,6 +1,6 @@
 /**
  * @author Nikolai Tschacher
- * @version 1.0
+ * @version 1.1
  * @last_modified March 2020
  * @website: scrapeulous.com
  *
@@ -10,8 +10,11 @@
  *
  * @param: options.custom_regexes: List of custom regexes to find lead information
  * @param: options.custom_css_selectors: List of custom css selectors
+ * @param: options.advanced:
  *
- * @TODO: If not found: Tries to find interesting links on the site such as: contact/about/impressum
+ * If options.advanced is set to True, then we extract all <a href=""></a> elements from the DOM and check if the link
+ * appears to point to a impressum/about/contact/information page where lead information
+ * could be stored.
  */
 class Leads extends HttpWorker {
   async crawl(url) {
@@ -23,57 +26,61 @@ class Leads extends HttpWorker {
 
     let user_agent = new this.UserAgent({deviceCategory: 'desktop'}).toString();
     let headers = {'User-Agent': user_agent};
+    let to_visit = [url];
 
-    let response = await this.Got(url, {headers: headers});
+    let response = await this.Got(to_visit.pop(), {headers: headers});
     let html = response.body;
-    this.extractLeadInformation(html, result);
-
-    // remove duplicates in both arrays
-    result.phone_numbers = [...new Set(result.phone_numbers)];
-    result.email_addresses = [...new Set(result.email_addresses)];
-
-    // extract page title
     const $ = this.Cheerio.load(html);
 
+    // extract page title
     result.page_title = $('title').contents().first().text();
     if (result.page_title) {
       result.page_title = result.page_title.trim();
     }
 
-    if (this.options.custom_css_selectors) {
-      result.custom_css_selectors = [];
-      // extract custom css selectors
-      for (let selector of this.options.custom_css_selectors) {
-        let res = $(selector).first().text();
-        if (res) {
-          result.custom_css_selectors.push(res)
-        }
-      }
-      // remove duplicates
-      result.custom_css_selectors = [...new Set(result.custom_css_selectors)];
-    }
+    if (this.options.advanced && this.options.advanced === true) {
+      const needles = ['about', 'contact',
+        'impressum', 'site-notice', 'person',
+        'me', 'feedback', 'info'];
 
-    // custom_regexes is a list of
-    // {pattern: '', flags: ''} objects
-    if (this.options.custom_regexes) {
-      result.custom_regexes = [];
-      // extract custom custom_regexes
-      for (let regex of this.options.custom_regexes) {
-        if (regex.pattern) {
-          var re = new RegExp(regex.pattern, regex.flags);
-          let res = html.match(re);
-          if (res) {
-            result.custom_regexes.push(res)
+      let all_links = [];
+      $($('a')).each(function(i, link) {
+        let link_text = $(link).text();
+        let href = $(link).attr('href');
+        all_links.push({
+          link: href,
+          text: link_text
+        });
+      });
+
+      for (let obj of all_links) {
+        for (let needle of needles) {
+          if (obj.link.includes(needle)) {
+            to_visit.push(obj.link);
           }
         }
       }
-      // remove duplicates
-      result.custom_regexes = [...new Set(result.custom_regexes)];
+
+      this.logger.info(to_visit);
     }
+
+    while (to_visit.length > 0) {
+      let url = to_visit.pop();
+      this.logger.info(`Visiting url ${url}`);
+      let response = await this.Got(url, {headers: headers});
+      let html = response.body;
+      const $ = this.Cheerio.load(html);
+      this.extractLeadInformation(html, result, $);
+    }
+
+    // remove duplicates in both arrays
+    result.phone_numbers = [...new Set(result.phone_numbers)];
+    result.email_addresses = [...new Set(result.email_addresses)];
+
     return result;
   }
 
-  extractLeadInformation(html, result) {
+  extractLeadInformation(html, result, $) {
     // parse phone numbers
     const phone_number_regex_list = [
       // find generic phone numbers
@@ -108,6 +115,37 @@ class Leads extends HttpWorker {
       if (emails) {
         result.email_addresses.push(...emails);
       }
+    }
+
+    if (this.options.custom_css_selectors) {
+      result.custom_css_selectors = [];
+      // extract custom css selectors
+      for (let selector of this.options.custom_css_selectors) {
+        let res = $(selector).first().text();
+        if (res) {
+          result.custom_css_selectors.push(res)
+        }
+      }
+      // remove duplicates
+      result.custom_css_selectors = [...new Set(result.custom_css_selectors)];
+    }
+
+    // custom_regexes is a list of
+    // {pattern: '', flags: ''} objects
+    if (this.options.custom_regexes) {
+      result.custom_regexes = [];
+      // extract custom custom_regexes
+      for (let regex of this.options.custom_regexes) {
+        if (regex.pattern) {
+          var re = new RegExp(regex.pattern, regex.flags);
+          let res = html.match(re);
+          if (res) {
+            result.custom_regexes.push(res)
+          }
+        }
+      }
+      // remove duplicates
+      result.custom_regexes = [...new Set(result.custom_regexes)];
     }
   }
 }
