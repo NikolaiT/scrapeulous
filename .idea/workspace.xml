@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="02ba9c43-ce18-4642-9681-3b462de8b0d8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/examples/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/lawleads.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -73,6 +70,7 @@
       <workItem from="1584741170752" duration="293000" />
       <workItem from="1584827127889" duration="5369000" />
       <workItem from="1585480555299" duration="220000" />
+      <workItem from="1585603657035" duration="2708000" />
     </task>
     <servers />
   </component>
