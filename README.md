@@ -40,6 +40,12 @@ or
 node test_runner.js reverse_image_bing.js '["AC_I161709.jpg"]'
 ```
 
+or you can run the social scraper:
+
+```bash
+node test_runner.js social.js '["http://www.flinders.edu.au/", "http://www.latrobe.edu.au/", "http://www.griffith.edu.au/", "http://www.murdoch.edu.au/", "https://www.qut.edu.au/"]'
+```
+
 ## Examples of crawler functions
 
 + [Scraping of Product Metadata on Amazon](amazon.js)

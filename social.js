@@ -1,6 +1,6 @@
 /**
  * @author Nikolai Tschacher
- * @version 1.0
+ * @version 1.1
  * @last_modified April 2020
  * @website: scrapeulous.com
  *
@@ -9,7 +9,9 @@
  * 
  * Extracts: linkedin profile, email address, facebook, instagram, twitter, phone regex
  *
- * @param: options.custom_regexes: List of custom regexes to find lead information
+ * @param: options.link_depth: how many levels to crawl. default: 1
+ * @param: options.max_requests: how many requests to maximally make. default: 10
+ * @param: options.stay_within_domain: only visit links that have the same domain (or www). default: true
  */
 class Social extends HttpWorker {
   async crawl(url) {
@@ -23,6 +25,26 @@ class Social extends HttpWorker {
       twitter: [],
       github: [],
     };
+
+    let parsed_url;
+
+    try {
+      parsed_url = new URL(url);
+    } catch (err) {
+      return {
+        error: `url ${url} is invalid: ${err.message}`
+      };
+    }
+
+    if (!this.options.link_depth) {
+      this.options.link_depth = 1;
+    }
+    if (!this.options.max_requests) {
+      this.options.max_requests = 10;
+    }
+    if (!this.options.stay_within_domain) {
+      this.options.stay_within_domain = true;
+    }
 
     // set an random desktop user agent
     let user_agent = new this.UserAgent({deviceCategory: 'desktop'}).toString();
@@ -41,41 +63,27 @@ class Social extends HttpWorker {
       result.page_title = result.page_title.trim();
     }
 
-    if (this.options.advanced && this.options.advanced === true) {
-      const needles = ['about', 'contact',
-        'impressum', 'site-notice', 'person',
-        'me', 'feedback', 'info'];
+    // only crawl exactly with depth one
+    if (this.options.link_depth > 0) {
+      let candidates = this.getLinks($);
+      // filter urls
+      to_visit.push(
+        ...this.cleanLinks(candidates, parsed_url)
+      );
 
-      let all_links = [];
-      $($('a')).each(function(i, link) {
-        let link_text = $(link).text();
-        let href = $(link).attr('href');
-        if (href && href.trim()) {
-          all_links.push({
-            link: href,
-            text: link_text
-          });
-        }
-      });
-
-      for (let obj of all_links) {
-        for (let needle of needles) {
-          if (obj.link.includes(needle)) {
-            to_visit.push(obj.link);
-          }
+      while (to_visit.length > 0 && this.options.max_requests > 0) {
+        let url = to_visit.pop();
+        this.logger.info(`Visiting url ${url}`);
+        try {
+          let response = await this.Got(url, {headers: headers});
+          let html = response.body;
+          const $ = this.Cheerio.load(html);
+          this.extractSocialInformation(html, result, $);
+          this.options.max_requests--;
+        } catch (err) {
+          console.error(err);
         }
       }
-
-      this.logger.info(to_visit);
-    }
-
-    while (to_visit.length > 0) {
-      let url = to_visit.pop();
-      this.logger.info(`Visiting url ${url}`);
-      let response = await this.Got(url, {headers: headers});
-      let html = response.body;
-      const $ = this.Cheerio.load(html);
-      this.extractSocialInformation(html, result, $);
     }
 
     // remove duplicates in all arrays
@@ -86,6 +94,48 @@ class Social extends HttpWorker {
     }
 
     return result;
+  }
+
+  cleanLinks(links, parsed_url) {
+    let filtered = [];
+    for (let link of links) {
+      let skip = false;
+      let url;
+      try {
+        url = new URL(link.link, parsed_url.origin);
+      } catch (err) {
+        this.logger.warn(`url ${link.link} cannot be parsed`);
+        continue;
+      }
+      // https://developer.mozilla.org/en-US/docs/Web/API/URL/URL
+      if (this.options.stay_within_domain) {
+        if (url.hostname !== parsed_url.hostname) {
+          skip = true;
+        }
+      }
+      if (!skip) {
+        let url_string = url.toString();
+        url_string = url_string.replace(/#/g, '');
+        filtered.push(url_string);
+      }
+    }
+
+    return [...new Set(filtered)];
+  }
+
+  getLinks($) {
+    let all_links = [];
+    $($('a')).each(function(i, link) {
+      let link_text = $(link).text();
+      let href = $(link).attr('href');
+      if (href && href.trim()) {
+        all_links.push({
+          link: href,
+          text: link_text
+        });
+      }
+    });
+    return all_links;
   }
 
   extractEmails(html) {
@@ -164,7 +214,6 @@ class Social extends HttpWorker {
         phones.push(...phone_matches);
       }
     }
-
     return phones;
   }
 

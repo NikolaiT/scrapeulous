@@ -105,6 +105,10 @@ class TestRunner {
     options.advanced = false;
   }
 
+  if (crawler === 'social.js') {
+    options.link_depth = 1;
+  }
+
   console.log(`Running crawler ${crawler} with options ${JSON.stringify(options)}`);
 
   let tester = new TestRunner(crawler, items, options);
