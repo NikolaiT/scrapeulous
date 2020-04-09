@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="02ba9c43-ce18-4642-9681-3b462de8b0d8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/timeout.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fail_url.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +75,7 @@
       <workItem from="1585680152285" duration="600000" />
       <workItem from="1585684393024" duration="1523000" />
       <workItem from="1586198398022" duration="2302000" />
-      <workItem from="1586285728695" duration="397000" />
+      <workItem from="1586285728695" duration="2334000" />
     </task>
     <servers />
   </component>

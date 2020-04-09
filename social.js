@@ -176,7 +176,7 @@ class Social extends HttpWorker {
 
   extractTwitter(html) {
     let twitter = html.match(
-      /http(s)?:\/\/(.*\.)?twitter\.com\/[A-z0-9_]+\/?/gm
+      /http(s)?:\/\/(.*\.)?twitter\.com\/[A-z0-9_]{1,100}\/?/gm
     );
 
     if (twitter) {

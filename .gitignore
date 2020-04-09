@@ -1,3 +1,4 @@
 unused/
 node_modules/
 .idea/
+tests/
