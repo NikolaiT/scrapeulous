@@ -99,6 +99,7 @@ class ReverseImageGoogle extends BrowserWorker {
           candidates[i],
         );
         metadata[i].imgurl = this.get_imgurl(href);
+        metadata[i].type = 'imgurl_by_clicking_on_image';
         let imgrefurlControl = this.get_imgrefurl(href);
         if (imgrefurlControl !== metadata[i].imgrefurl) {
           throw Error('critical error: inconsistency between imgrefurls!');
