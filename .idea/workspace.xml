@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="02ba9c43-ce18-4642-9681-3b462de8b0d8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/reverse_image/reverse_image_google_final.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reverse_image_bing.js" beforeDir="false" afterPath="$PROJECT_DIR$/reverse_image/reverse_image_bing.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reverse_image_bing_url.js" beforeDir="false" afterPath="$PROJECT_DIR$/reverse_image/reverse_image_bing_url.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reverse_image_google.js" beforeDir="false" afterPath="$PROJECT_DIR$/reverse_image/reverse_image_google.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reverse_image_google_dataimg.js" beforeDir="false" afterPath="$PROJECT_DIR$/reverse_image/reverse_image_google_dataimg.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/reverse_image_google_url.js" beforeDir="false" afterPath="$PROJECT_DIR$/reverse_image/reverse_image_google_url.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_runner.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_runner.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +52,9 @@
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode.JavaScript" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/reverse_image" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -76,6 +86,8 @@
       <workItem from="1585684393024" duration="1523000" />
       <workItem from="1586198398022" duration="2302000" />
       <workItem from="1586285728695" duration="2334000" />
+      <workItem from="1586517849370" duration="2729000" />
+      <workItem from="1586521073975" duration="5578000" />
     </task>
     <servers />
   </component>
@@ -87,10 +99,11 @@
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2369" y="176" width="1022" height="732" key="SettingsEditor/0.25.1920.1055/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583410451384" />
-    <state x="2546" y="369" key="com.intellij.ide.util.TipDialog" timestamp="1584827126915">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state x="626" y="385" key="com.intellij.ide.util.TipDialog" timestamp="1586521601656">
+      <screen x="0" y="25" width="1920" height="1055" />
     </state>
     <state x="2546" y="369" key="com.intellij.ide.util.TipDialog/0.25.1920.1055/1920.0.1920.1080@1920.0.1920.1080" timestamp="1584827126915" />
+    <state x="626" y="385" key="com.intellij.ide.util.TipDialog/0.25.1920.1055@0.25.1920.1055" timestamp="1586521601656" />
     <state x="2403" y="142" width="950" height="800" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1583717848861">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>

@@ -42,7 +42,7 @@ class BrowserWorker extends Worker {
     this.clipboardy = clipboardy;
     const puppeteer = require('puppeteer');
     this.browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       defaultViewport: null,
       args: ['--start-maximized'],
     });

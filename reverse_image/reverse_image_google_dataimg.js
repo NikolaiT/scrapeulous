@@ -1,10 +1,10 @@
 /**
- * Reverse image search on Bing.
+ * Reverse image search on Google.
  *
  * @param item: key to stored image in s3
  * @param options: Holds all configuration data and options
  */
-class Render extends BrowserWorker {
+class ReverseImageGoogle extends BrowserWorker {
   /**
    * uploadFile() is broken in 2.1.0 and 2.1.1
    * Solution: https://github.com/puppeteer/puppeteer/issues/5420
