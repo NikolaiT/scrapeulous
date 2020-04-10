@@ -24,7 +24,6 @@ class Render extends BrowserWorker {
   }
 
   async crawl(url) {
-    let results = {};
     await this.page.goto('https://www.bing.com/images?', { waitUntil: 'networkidle2' });
 
     await this.page.$eval('#sb_form_q', (el, value) => el.value = value, url);
@@ -45,7 +44,7 @@ class Render extends BrowserWorker {
     await this.page.waitForSelector('#i_results');
     await this.page.waitFor(100);
 
-    let image_data = await this.page.evaluate(() => {
+    return await this.page.evaluate(() => {
       function get_imgurl(url) {
         const regex = /mediaurl=(.*)/gm;
         let match = regex.exec(url);
@@ -72,7 +71,5 @@ class Render extends BrowserWorker {
       }
       return res;
     });
-    results[url] = image_data;
-    return results;
   }
 }

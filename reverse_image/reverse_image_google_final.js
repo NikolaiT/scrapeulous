@@ -29,8 +29,6 @@ class ReverseImageGoogle extends BrowserWorker {
   }
 
   async crawl(url) {
-    let results = {};
-
     if (!this.options.extract_data_image) {
       this.options.extract_data_image = true;
     }
@@ -55,7 +53,7 @@ class ReverseImageGoogle extends BrowserWorker {
     try {
       await this.page.click('g-section-with-header h3 > a');
     } catch (err) {
-      return results;
+      return [];
     }
 
     await this.page.waitForNavigation();
