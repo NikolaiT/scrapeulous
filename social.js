@@ -152,7 +152,7 @@ class Social extends HttpWorker {
 
   extractInstagram(html) {
     let instagram_profiles = html.match(
-      /https?:\/\/(www\.)?instagram\.com\/([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?)/gm
+      /https?:\/\/(www\.)?instagram\.com\/(?!p\/)([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?)/gm
     );
 
     if (instagram_profiles) {
@@ -164,7 +164,7 @@ class Social extends HttpWorker {
 
   extractFacebook(html) {
     let facebook_urls = html.match(
-      /http(s)?:\/\/(www\.)?(facebook|fb)\.com\/[A-z0-9_\-\.]+\/?/gm
+      /http(s)?:\/\/(www\.)?(facebook|fb)\.com\/(?!share\.php)[A-z0-9_\-\.]+\/?/gm
     );
 
     if (facebook_urls) {
@@ -176,7 +176,7 @@ class Social extends HttpWorker {
 
   extractTwitter(html) {
     let twitter = html.match(
-      /http(s)?:\/\/(.*\.)?twitter\.com\/[A-z0-9_]{1,100}\/?/gm
+      /http(s)?:\/\/(.*\.)?twitter\.com\/(?!intent\/)[A-z0-9_]{1,100}\/?/gm
     );
 
     if (twitter) {
