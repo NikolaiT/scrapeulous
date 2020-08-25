@@ -7,7 +7,7 @@ class RenderRaw {
     await this.page.waitFor(500);
 
     return await this.page.evaluate(() => {
-      document.getElementById('fp').innerText
+      return document.getElementById('fp').innerText
     });
   }
 }
