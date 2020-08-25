@@ -4,10 +4,10 @@ class RenderRaw {
       waitUntil: 'networkidle2', // two open connections is okay
     });
 
-    await this.page.waitFor(500);
+    await this.page.waitFor(1000);
 
     return await this.page.evaluate(() => {
-      return document.getElementById('fp').innerText
+      return document.getElementById('fp').innerText;
     });
   }
 }
