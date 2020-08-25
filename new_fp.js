@@ -6,8 +6,10 @@ class RenderRaw {
 
     await this.page.waitFor(1000);
 
-    return await this.page.evaluate(() => {
+    let fp = await this.page.evaluate(() => {
       return document.getElementById('fp').innerText;
     });
+
+    return JSON.parse(fp);
   }
 }
