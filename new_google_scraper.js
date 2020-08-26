@@ -106,12 +106,15 @@ class GoogleScraperNew {
         organic_results.forEach((el, index) => {
 
           let serp_obj = {
-            rank: index + 1,
-            link: _attr(el, '.r a', 'href'),
+            position: index + 1,
             title: _text(el, '.r a h3'),
+            link: _attr(el, '.r a', 'href'),
             snippet: _text(el, 'span.st'),
-            visible_link: _text(el, '.r cite'),
+            displayed_link: _text(el, '.r cite'),
+            thumbnail: null,
             date: _text(el, 'span.f'),
+            cached_page_link: _attr(el, 'a.fl', 'href'),
+            related_pages_link: null,
           };
 
           if (serp_obj.date) {
