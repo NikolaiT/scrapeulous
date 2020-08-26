@@ -45,6 +45,7 @@ class GoogleScraperNew {
       await this.wait_for_results();
       let parsed = await this.parse(keyword);
 
+      parsed.html = await this.page.contents();
       parsed.search_parameters = {
         engine: "google",
         q: keyword,
@@ -62,7 +63,7 @@ class GoogleScraperNew {
         }
       }
 
-      parsed.page_num = page_num;
+      parsed.search_information.page_num = page_num;
       results.push(parsed);
       if (page_num < num_pages) {
         await this.next_page();
