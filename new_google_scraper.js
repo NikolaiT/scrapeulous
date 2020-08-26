@@ -78,9 +78,20 @@ class GoogleScraperNew {
       };
 
       let results = {
+        search_information: {
+          organic_results_state: "Results for exact spelling",
+          total_results: null,
+          time_taken_displayed: null,
+          query_displayed: null
+        },
         no_results: false,
         right_info: {},
       };
+
+      try {
+        results.search_information.query_displayed = document.querySelector('input[name="q"]').value;
+      } catch (err) {
+      }
 
       let miniapps_element = document.querySelector('[data-async-type="miniapps"]');
       if (miniapps_element) {
@@ -88,15 +99,16 @@ class GoogleScraperNew {
       }
 
       try {
-        let num_results_el = document.getElementById('extabar').querySelector('nobr').parentNode;
+        let num_results_el = document.getElementById('result-stats');
         if (num_results_el) {
-          results.num_results = num_results_el.innerText;
+          let num_res_text = num_results_el.innerText;
+          let match = num_res_text.match(/[\d,\.\s]{2,20}/g);
+          if (match) {
+            results.search_information.total_results = match[0];
+            results.search_information.time_taken_displayed = match[1];
+          }
         }
       } catch (err) {
-        let num_results_el = document.getElementById('extabar');
-        if (num_results_el) {
-          results.num_results = num_results_el.innerText;
-        }
       }
 
       let organic_results = document.querySelectorAll('#center_col .g');
@@ -104,7 +116,6 @@ class GoogleScraperNew {
       if (organic_results) {
         results.results = [];
         organic_results.forEach((el, index) => {
-
           let serp_obj = {
             position: index + 1,
             title: _text(el, '.r a h3'),
@@ -268,16 +279,19 @@ class GoogleScraperNew {
       });
 
       let effective_query_el = document.getElementById('fprsl');
-
+      let effective_query = '';
       if (effective_query_el) {
-
-        results.effective_query = effective_query_el.innerText;
-        if (!results.effective_query) {
+        effective_query = effective_query_el.innerText;
+        if (!effective_query) {
           let effective_query_el2 = document.querySelector('#fprs a');
           if (effective_query_el2) {
-            results.effective_query = document.querySelector('#fprs a').innerText;
+            effective_query = document.querySelector('#fprs a').innerText;
           }
         }
+      }
+      if (effective_query) {
+        results.search_information.query_displayed = effective_query;
+        results.search_information.organic_results_state = "Results for spelling corrected query";
       }
 
       return results;
