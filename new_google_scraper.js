@@ -102,8 +102,8 @@ class GoogleScraperNew {
           let num_res_text = num_results_el.innerText;
           let match = num_res_text.match(/[\d,\.\s]{2,20}/g);
           if (match) {
-            results.search_information.total_results = parseFloat(match[0].trim());
-            results.search_information.time_taken_displayed = parseFloat(match[1].trim());
+            results.search_information.total_results = match[0].trim();
+            results.search_information.time_taken_displayed = match[1].trim();
           }
         }
       } catch (err) {
