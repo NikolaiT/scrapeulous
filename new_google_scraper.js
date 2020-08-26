@@ -84,8 +84,6 @@ class GoogleScraperNew {
           time_taken_displayed: null,
           query_displayed: null
         },
-        no_results: false,
-        right_info: {},
       };
 
       try {
@@ -104,8 +102,8 @@ class GoogleScraperNew {
           let num_res_text = num_results_el.innerText;
           let match = num_res_text.match(/[\d,\.\s]{2,20}/g);
           if (match) {
-            results.search_information.total_results = match[0];
-            results.search_information.time_taken_displayed = match[1];
+            results.search_information.total_results = parseFloat(match[0].trim());
+            results.search_information.time_taken_displayed = parseFloat(match[1].trim());
           }
         }
       } catch (err) {
@@ -135,9 +133,6 @@ class GoogleScraperNew {
           results.results.push(serp_obj);
         });
       }
-
-      // check if no results
-      results.no_results = (results.results.length === 0);
 
       let parseAds = (results, selector, name) => {
         document.querySelectorAll(selector).forEach((el) => {
@@ -181,43 +176,44 @@ class GoogleScraperNew {
       });
 
       // parse right side product information
-      results.right_info.review = _attr(document, '#rhs .cu-container g-review-stars span', 'aria-label');
-
-      let title_el = document.querySelector('#rhs .cu-container g-review-stars');
-      if (title_el) {
-        results.right_info.review.title = title_el.parentNode.querySelector('div:first-child').innerText;
-      }
-
-      let num_reviews_el = document.querySelector('#rhs .cu-container g-review-stars');
-      if (num_reviews_el) {
-        results.right_info.num_reviews = num_reviews_el.parentNode.querySelector('div:nth-of-type(2)').innerText;
-      }
-
-      results.right_info.vendors = [];
-      results.right_info.info = _text(document, '#rhs_block > div > div > div > div:nth-child(5) > div > div');
-
-      document.querySelectorAll('#rhs .cu-container .rhsvw > div > div:nth-child(4) > div > div:nth-child(3) > div').forEach((el) => {
-        results.right_info.vendors.push({
-          price: _text(el, 'span:nth-of-type(1)'),
-          merchant_name: _text(el, 'span:nth-child(3) a:nth-child(2)'),
-          merchant_ad_link: _attr(el, 'span:nth-child(3) a:first-child', 'href'),
-          merchant_link: _attr(el, 'span:nth-child(3) a:nth-child(2)', 'href'),
-          source_name: _text(el, 'span:nth-child(4) a'),
-          source_link: _attr(el, 'span:nth-child(4) a', 'href'),
-          info: _text(el, 'div span'),
-          shipping: _text(el, 'span:last-child > span'),
-        })
-      });
-
-      if (!results.right_info.title) {
+      if (document.querySelector('#rhs .cu-container')) {
         results.right_info = {};
+        results.right_info.review = _attr(document, '#rhs .cu-container g-review-stars span', 'aria-label');
+
+        let title_el = document.querySelector('#rhs .cu-container g-review-stars');
+        if (title_el) {
+          results.right_info.review.title = title_el.parentNode.querySelector('div:first-child').innerText;
+        }
+
+        let num_reviews_el = document.querySelector('#rhs .cu-container g-review-stars');
+        if (num_reviews_el) {
+          results.right_info.num_reviews = num_reviews_el.parentNode.querySelector('div:nth-of-type(2)').innerText;
+        }
+
+        results.right_info.vendors = [];
+        results.right_info.info = _text(document, '#rhs_block > div > div > div > div:nth-child(5) > div > div');
+
+        document.querySelectorAll('#rhs .cu-container .rhsvw > div > div:nth-child(4) > div > div:nth-child(3) > div').forEach((el) => {
+          results.right_info.vendors.push({
+            price: _text(el, 'span:nth-of-type(1)'),
+            merchant_name: _text(el, 'span:nth-child(3) a:nth-child(2)'),
+            merchant_ad_link: _attr(el, 'span:nth-child(3) a:first-child', 'href'),
+            merchant_link: _attr(el, 'span:nth-child(3) a:nth-child(2)', 'href'),
+            source_name: _text(el, 'span:nth-child(4) a'),
+            source_link: _attr(el, 'span:nth-child(4) a', 'href'),
+            info: _text(el, 'div span'),
+            shipping: _text(el, 'span:last-child > span'),
+          })
+        });
+
+        if (!results.right_info.title) {
+          results.right_info = {};
+        }
       }
 
       let right_side_info_el = document.getElementById('rhs');
-
       if (right_side_info_el) {
         let right_side_info_text = right_side_info_el.innerText;
-
         if (right_side_info_text && right_side_info_text.length > 0) {
           results.right_side_info_text = right_side_info_text;
         }
@@ -307,7 +303,6 @@ class GoogleScraperNew {
     if (Array.isArray(results.results)) {
       results.results = this.clean_results(results.results, ['title', 'link' , 'snippet']);
     }
-    results.time = (new Date()).toUTCString();
 
     return results;
   }
