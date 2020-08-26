@@ -44,8 +44,7 @@ class GoogleScraperNew {
       }
       await this.wait_for_results();
       let parsed = await this.parse(keyword);
-
-      parsed.html = await this.page.contents();
+      parsed.html = await this.page.content();
       parsed.search_parameters = {
         engine: "google",
         q: keyword,
