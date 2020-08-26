@@ -84,7 +84,23 @@ class GoogleScraperNew {
           time_taken_displayed: null,
           query_displayed: null
         },
+        search_parameters: {
+          engine: "google",
+          q: keyword,
+          location_requested: "-",
+          location_used: "-",
+          google_domain: "google.com",
+          hl: "en",
+          gl: "us",
+          device: "desktop"
+        },
       };
+
+      if (this.options && this.options.google_params) {
+        for (let key in this.options.google_params) {
+          results.search_parameters[key] = this.options.google_params[key];
+        }
+      }
 
       try {
         results.search_information.query_displayed = document.querySelector('input[name="q"]').value;
