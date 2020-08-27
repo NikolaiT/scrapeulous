@@ -194,7 +194,7 @@ class GoogleScraperNew {
           let ad_obj = {
             position: add_position,
             block_position: block_position,
-            displayed_link: el.querySelector('a').nextSibling.querySelector('span > span').innerText,
+            displayed_link: el.querySelector('a').nextSibling.querySelector('span:nth-child(2)').textContent,
             tracking_link: el.querySelector('a').getAttribute('data-rw'),
             link: el.querySelector('a').getAttribute('href'),
             title: el.querySelector('[role="heading"]').innerText,
