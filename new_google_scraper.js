@@ -115,6 +115,37 @@ class GoogleScraperNew {
         results.miniapps = miniapps_element.innerText;
       }
 
+      // parse related seraches
+      let related_el = document.getElementById('brs');
+      if (related_el) {
+        let related_links = related_el.querySelectorAll('.brs_col a');
+        related_links.forEach((el, index) => {
+          if (!results.related_searches) {
+            results.related_searches = [];
+          }
+          results.related_searches.push({
+            query: el.innerText,
+            link: el.getAttribute('href'),
+          })
+        });
+      }
+
+      // parse pagination
+      let pagination_el = document.getElementById('xjs');
+      if (pagination_el) {
+        let pagination = related_el.querySelectorAll('a.fl');
+        pagination.forEach((el, index) => {
+          if (!results.pagination) {
+            results.pagination = {};
+            results.pagination.other_pages = {};
+            try {
+              results.pagination.next = document.getElementById('pnnext').getAttribute('href');
+            } catch (err) {}
+          }
+          results.pagination.other_pages[el.innerText] = el.getAttribute('href');
+        });
+      }
+
       try {
         let num_results_el = document.getElementById('result-stats');
         if (num_results_el) {
@@ -153,19 +184,21 @@ class GoogleScraperNew {
         });
       }
 
-      let parseAds = (results, selector, name) => {
+      const add_position = 1;
+      let parseAds = (results, selector, block_position) => {
         document.querySelectorAll(selector).forEach((el) => {
-          if (!results[name]) {
-            results[name] = [];
+          if (!results.ads) {
+            results.ads = [];
           }
-
           let ad_obj = {
-            visible_link: _text(el, '.ads-visurl cite'),
+            position: add_position,
+            block_position: block_position,
+            displayed_link: _text(el, '.ads-visurl cite'),
             tracking_link: _attr(el, 'a:first-child', 'href'),
             link: _attr(el, 'a:nth-child(2)', 'href'),
             title: _text(el, 'a h3'),
-            snippet: _text(el, '.ads-creative'),
-            links: [],
+            description: _text(el, '.ads-creative'),
+            sitelinks: [],
           };
           el.querySelectorAll('ul li a').forEach((node) => {
             ad_obj.links.push({
@@ -174,12 +207,13 @@ class GoogleScraperNew {
               title: node.innerText,
             })
           });
-          container.push(ad_obj);
+          results.ads.push(ad_obj);
+          add_position++;
         });
       };
 
-      parseAds(results, '#tads .ads-ad', 'top_ads');
-      parseAds(results, '#tadsb .ads-ad', 'bottom_ads');
+      parseAds(results, '#tads .ads-ad', 'top');
+      parseAds(results, '#tadsb .ads-ad', 'bottom');
 
       // parse google places
       document.querySelectorAll('.rllt__link').forEach((el) => {
