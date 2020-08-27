@@ -184,7 +184,7 @@ class GoogleScraperNew {
         });
       }
 
-      const add_position = 1;
+      let add_position = 1;
       let parseAds = (results, selector, block_position) => {
         document.querySelectorAll(selector).forEach((el) => {
           if (!results.ads) {
