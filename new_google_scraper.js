@@ -185,6 +185,7 @@ class GoogleScraperNew {
       }
 
       let add_position = 1;
+      // parse ads
       let parseAds = (results, selector, block_position) => {
         document.querySelectorAll(selector).forEach((el) => {
           if (!results.ads) {
@@ -201,7 +202,7 @@ class GoogleScraperNew {
             sitelinks: [],
           };
           el.querySelectorAll('[role="list"] a').forEach((node) => {
-            ad_obj.links.push({
+            ad_obj.sitelinks.push({
               tracking_link: node.getAttribute('data-arwt'),
               link: node.getAttribute('href'),
               title: node.innerText,
