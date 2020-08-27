@@ -193,14 +193,14 @@ class GoogleScraperNew {
           let ad_obj = {
             position: add_position,
             block_position: block_position,
-            displayed_link: _text(el, '.ads-visurl cite'),
-            tracking_link: _attr(el, 'a:first-child', 'href'),
-            link: _attr(el, 'a:nth-child(2)', 'href'),
-            title: _text(el, 'a h3'),
-            description: _text(el, '.ads-creative'),
+            displayed_link: el.querySelector('a').getAttribute('href'),
+            tracking_link: el.querySelector('a').getAttribute('data-rw'),
+            link: el.querySelector('a').getAttribute('href'),
+            title: el.querySelector('[role="heading"]').innerText,
+            description: el.querySelector('a').parentNode.nextSibling.innerText,
             sitelinks: [],
           };
-          el.querySelectorAll('ul li a').forEach((node) => {
+          el.querySelectorAll('[role="list"] a').forEach((node) => {
             ad_obj.links.push({
               tracking_link: node.getAttribute('data-arwt'),
               link: node.getAttribute('href'),
