@@ -133,7 +133,7 @@ class GoogleScraperNew {
       // parse pagination
       let pagination_el = document.getElementById('xjs');
       if (pagination_el) {
-        let pagination = related_el.querySelectorAll('a.fl');
+        let pagination = pagination_el.querySelectorAll('a.fl');
         pagination.forEach((el, index) => {
           if (!results.pagination) {
             results.pagination = {};
@@ -212,8 +212,8 @@ class GoogleScraperNew {
         });
       };
 
-      parseAds(results, '#tads .ads-ad', 'top');
-      parseAds(results, '#tadsb .ads-ad', 'bottom');
+      parseAds(results, '#tads li', 'top');
+      parseAds(results, '#tadsb li', 'bottom');
 
       // parse google places
       document.querySelectorAll('.rllt__link').forEach((el) => {
