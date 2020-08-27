@@ -160,9 +160,8 @@ class GoogleScraperNew {
       }
 
       let organic_results = document.querySelectorAll('#center_col .g');
-
       if (organic_results) {
-        results.results = [];
+        results.organic_results = [];
         organic_results.forEach((el, index) => {
           let serp_obj = {
             position: index + 1,
@@ -175,12 +174,10 @@ class GoogleScraperNew {
             cached_page_link: _attr(el, 'a.fl', 'href'),
             related_pages_link: null,
           };
-
           if (serp_obj.date) {
             serp_obj.date = serp_obj.date.replace(' - ', '');
           }
-
-          results.results.push(serp_obj);
+          results.organic_results.push(serp_obj);
         });
       }
 
@@ -348,14 +345,11 @@ class GoogleScraperNew {
     });
 
     // clean some results
-    if (Array.isArray(results.top_products)) {
-      results.top_products = this.clean_results(results.top_products, ['title', 'link']);
+    if (Array.isArray(results.ads)) {
+      results.ads = this.clean_results(results.ads, ['title', 'link']);
     }
-    if (Array.isArray(results.right_products)) {
-      results.right_products = this.clean_results(results.right_products, ['title', 'link']);
-    }
-    if (Array.isArray(results.results)) {
-      results.results = this.clean_results(results.results, ['title', 'link' , 'snippet']);
+    if (Array.isArray(results.organic_results)) {
+      results.organic_results = this.clean_results(results.organic_results, ['title', 'link' , 'snippet']);
     }
 
     return results;
