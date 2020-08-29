@@ -373,7 +373,7 @@ class GoogleScraperNew {
       }
     }
     //use google search url params to directly access the search results for our search query
-    await page.goto(url);
+    await this.page.goto(url);
   }
 
   async load_start_page() {
