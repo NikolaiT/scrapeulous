@@ -1,7 +1,7 @@
 /**
  * @author Nikolai Tschacher
- * @version 1.1
- * @last_modified Aug 2020
+ * @version 1.2
+ * @last_modified Sep 2020
  * @website: incolumitas.com
  *
  * Searches on Google and extracts search results from the SERP.
@@ -10,6 +10,10 @@
  *
  * Supported options:
  *
+ * @param options.search_type: direct | main_domain_first | addressbar, How to conduct the google search.
+      direct means that the full Google search Url is entered.
+      main_domain_first means that we navigate first to the main google domain and then search manually
+      addressbar means that we type the search query into the address bar. currently not supported
  * @param options.num_pages: integer, the number of pages to crawl for all keywords
  * @param options.google_domain: string, the google domain to use
  * @param options.google_params: object, the google query arg parameters
@@ -29,18 +33,21 @@
 class GoogleScraperNew {
   async crawl(keyword) {
     this.logger.info('Running GoogleScraperNew');
-
+    let search_type = this.options.search_type || 'direct';
     let num_pages = 1;
     if (this.options && this.options.num_pages) {
       num_pages = this.options.num_pages;
     }
-
     let results = [];
 
     for (let page_num = 1; page_num <= num_pages; page_num++) {
       if (page_num === 1) {
-        await this.load_start_page();
-        await this.search_keyword(keyword);
+        if (search_type === 'direct') {
+          await this.direct_search(keyword);
+        } else {
+          await this.load_start_page();
+          await this.search_keyword(keyword);
+        }
       }
       await this.wait_for_results();
       let parsed = await this.parse(keyword);
@@ -355,6 +362,20 @@ class GoogleScraperNew {
     return results;
   }
 
+
+  async direct_search(keyword) {
+    // first build the proper google search url
+    let google_domain = this.options.google_domain || 'google.com';
+    let url = `https://${google_domain}/search?q=${keyword}`;
+    if (this.options && this.options.google_params) {
+      for (let key in this.options.google_params) {
+        url += `&${key}=${this.options.google_params[key]}`;
+      }
+    }
+    //use google search url params to directly access the search results for our search query
+    await page.goto(url);
+  }
+
   async load_start_page() {
     let startUrl = 'https://www.google.com';
 
@@ -423,6 +444,5 @@ class GoogleScraperNew {
 
   async wait_for_results() {
     await this.page.waitForSelector('#center_col .g');
-    await this.page.waitFor(100);
   }
 }
