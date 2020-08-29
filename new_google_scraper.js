@@ -222,15 +222,27 @@ class GoogleScraperNew {
 
       // parse google places
       document.querySelectorAll('.rllt__link').forEach((el) => {
-        if (!results.places) {
-          results.places = [];
+        if (!results.local_results) {
+          results.local_results = [];
         }
-        results.places.push({
-          heading: _text(el, '[role="heading"] span'),
-          rating: _text(el, '.rllt__details div:first-child'),
-          contact: _text(el, '.rllt__details div:nth-child(2)'),
+        let meta_info = _text(el, '.rllt__details div:first-child');
+        let parts = meta_info.split('\n');
+        if (parts) {
+          let rating = parts[0].trim();
+          let more = parts[1].split('·');
+          let num_reviews = more[0].trim().replace('(', '').replace(')', '');
+          let type = more[1].trim();
+        }
+
+        results.local_results.push({
+          title: _text(el, '[role="heading"] span'),
+          rating: rating,
+          reviews: num_reviews,
+          type: type,
+          address: _text(el, '.rllt__details div:nth-child(2)'),
           hours: _text(el, '.rllt__details div:nth-child(3)'),
-        })
+          thumbnail: el.querySelector('img').getAttribute('src'),
+        });
       });
 
       // parse right side product information
