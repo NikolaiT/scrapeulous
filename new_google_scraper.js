@@ -240,7 +240,7 @@ class GoogleScraperNew {
         let meta_info = _text(el, '.rllt__details div:first-child');
         if (meta_info) {
           let parts = meta_info.split('\n');
-          if (parts) {
+          if (Array.isArray(parts) && parts.length > 1) {
             rating = parts[0].trim();
             let more = parts[1].split('·');
             if (more) {
