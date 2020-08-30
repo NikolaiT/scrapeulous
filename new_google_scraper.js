@@ -51,7 +51,8 @@ class GoogleScraperNew {
       let success = await this.wait_for_results();
       if (!success) {
         results.push({
-          error: 'google recaptcha shown',
+          status: 'Failed',
+          error: 'Google recaptcha shown',
           html: await this.page.content(),
         });
         return results;
@@ -60,6 +61,7 @@ class GoogleScraperNew {
       let parsed = await this.parse(keyword);
       parsed.html = await this.page.content();
       parsed.search_parameters = {
+        google_url: await this.page.url(),
         engine: "google",
         q: keyword,
         location_requested: "-",
