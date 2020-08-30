@@ -234,17 +234,19 @@ class GoogleScraperNew {
         if (!results.local_results) {
           results.local_results = [];
         }
-        let meta_info = _text(el, '.rllt__details div:first-child');
-        let parts = meta_info.split('\n');
         let rating = '';
         let reviews = null;
         let type = '';
-        if (parts) {
-          rating = parts[0].trim();
-          let more = parts[1].split('·');
-          if (more) {
-            reviews = more[0].trim().replace('(', '').replace(')', '');
-            type = more[1].trim();
+        let meta_info = _text(el, '.rllt__details div:first-child');
+        if (meta_info) {
+          let parts = meta_info.split('\n');
+          if (parts) {
+            rating = parts[0].trim();
+            let more = parts[1].split('·');
+            if (more) {
+              reviews = more[0].trim().replace('(', '').replace(')', '');
+              type = more[1].trim();
+            }
           }
         }
 
