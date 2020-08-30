@@ -49,7 +49,14 @@ class GoogleScraperNew {
           await this.search_keyword(keyword);
         }
       }
-      await this.wait_for_results();
+      let success = await this.wait_for_results();
+      if (!success) {
+        return {
+          error: 'google recaptcha shown',
+          html: await this.page.content(),
+        };
+      }
+
       let parsed = await this.parse(keyword);
       parsed.html = await this.page.content();
       parsed.search_parameters = {
@@ -460,6 +467,25 @@ class GoogleScraperNew {
   }
 
   async wait_for_results() {
-    await this.page.waitForSelector('#center_col .g');
+    // https://github.com/puppeteer/puppeteer/issues/709
+    const raceSelectors = (page, selectors) => {
+      return Promise.race(
+        selectors.map(selector => {
+          return page
+            .waitForSelector(selector, {
+              visible: true,
+            })
+            .then(() => selector);
+        }),
+      );
+    };
+
+    const selector = await raceSelectors(page, ['#center_col .g', '#recaptcha']);
+
+    if (selector === '#center_col .g') {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
