@@ -39,7 +39,6 @@ class GoogleScraperNew {
       num_pages = this.options.num_pages;
     }
     let results = [];
-
     for (let page_num = 1; page_num <= num_pages; page_num++) {
       if (page_num === 1) {
         if (search_type === 'direct') {
@@ -51,10 +50,11 @@ class GoogleScraperNew {
       }
       let success = await this.wait_for_results();
       if (!success) {
-        return {
+        results.push({
           error: 'google recaptcha shown',
           html: await this.page.content(),
-        };
+        });
+        return results;
       }
 
       let parsed = await this.parse(keyword);
