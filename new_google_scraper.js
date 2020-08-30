@@ -480,7 +480,7 @@ class GoogleScraperNew {
       );
     };
 
-    const selector = await raceSelectors(page, ['#center_col .g', '#recaptcha']);
+    const selector = await raceSelectors(this.page, ['#center_col .g', '#recaptcha']);
 
     if (selector === '#center_col .g') {
       return true;
