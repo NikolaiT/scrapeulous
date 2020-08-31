@@ -57,7 +57,6 @@ class GoogleScraperNew {
           return text.slice(offset, text.indexOf('Time:'));
         });
         results.push({
-          text: await this.page.evaluate(() => { return document.body.innerText; }),
           status: 'Failed',
           error: 'Google recaptcha shown',
           blocked_ip: blocked_ip,
