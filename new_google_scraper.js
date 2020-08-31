@@ -50,7 +50,7 @@ class GoogleScraperNew {
       }
       let success = await this.wait_for_results();
       if (!success) {
-        let blocked_ip = this.page.evaluate(() => {
+        let blocked_ip = await this.page.evaluate(() => {
           let text = document.body.innerText;
           let i = text.indexOf('IP address: ');
           let offset = i + 'IP address: '.length;
