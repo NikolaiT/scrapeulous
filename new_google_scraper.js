@@ -54,7 +54,7 @@ class GoogleScraperNew {
           let text = document.body.innerText;
           let i = text.indexOf('IP address: ');
           let offset = i + 'IP address: '.length;
-          return text.slice(offset, text.indexOf('Time:'));
+          return text.slice(offset, text.indexOf('Time:')).trim();
         });
         results.push({
           status: 'Failed',
