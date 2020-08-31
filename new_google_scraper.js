@@ -50,9 +50,16 @@ class GoogleScraperNew {
       }
       let success = await this.wait_for_results();
       if (!success) {
+        let blocked_ip = this.page.evaluate(() => {
+          let text = document.body.innerText;
+          let i = text.indexOf('IP address: ');
+          let offset = i + 'IP address: '.length;
+          return text.slice(offset, text.indexOf('Time:'));
+        });
         results.push({
           status: 'Failed',
           error: 'Google recaptcha shown',
+          blocked_ip: blocked_ip,
           html: await this.page.content(),
         });
         return results;
