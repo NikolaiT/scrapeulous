@@ -7,7 +7,16 @@ class WebrtcCheckNew {
 
     if (url === 'https://ip.voidsec.com/') {
       return await this.page.evaluate(function () {
-        return document.getElementById('fpIPv4Addr').innerText;
+        let ip = '';
+        let leaked = '';
+        ip = document.getElementById('fpIPv4Addr').innerText;
+        try {
+          leaked = document.querySelector('#IPLeak li').innerText;
+        } catch (err) {}
+        return {
+          ip: ip,
+          leaked: leaked,
+        }
       });
     }
 
