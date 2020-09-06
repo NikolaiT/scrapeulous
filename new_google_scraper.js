@@ -408,7 +408,7 @@ class GoogleScraperNew {
       }
     }
     //use google search url params to directly access the search results for our search query
-    await this.page.goto(url);
+    await this.page.goto(url, {waitUntil: 'domcontentloaded'});
   }
 
   async load_start_page() {
@@ -428,7 +428,7 @@ class GoogleScraperNew {
 
     this.logger.info('Using startUrl: ' + startUrl);
 
-    await this.page.goto(startUrl);
+    await this.page.goto(startUrl, {waitUntil: 'domcontentloaded'});
     await this.page.waitForSelector('input[name="q"]');
   }
 
