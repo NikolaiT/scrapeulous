@@ -1,6 +1,6 @@
 /**
  * @author Nikolai Tschacher
- * @version 1.2
+ * @version 1.3
  * @last_modified Sep 2020
  * @website: incolumitas.com
  *
@@ -17,6 +17,7 @@
  * @param options.num_pages: integer, the number of pages to crawl for all keywords
  * @param options.google_domain: string, the google domain to use
  * @param options.google_params: object, the google query arg parameters
+ * @param options.google_serp_url: string, the url to the google serp html page
  *
  * For example:
  *
@@ -407,6 +408,11 @@ class GoogleScraperNew {
         url += `&${key}=${this.options.google_params[key]}`;
       }
     }
+
+    if (this.options.google_serp_url) {
+      url = this.options.google_serp_url;
+    }
+
     //use google search url params to directly access the search results for our search query
     await this.page.goto(url, {waitUntil: 'domcontentloaded'});
   }
