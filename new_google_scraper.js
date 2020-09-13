@@ -266,11 +266,17 @@ class GoogleScraperNew {
       parseAds(results, '#tads li', 'top');
       parseAds(results, '#tadsb li', 'bottom');
 
+      let more_locations_link_el = document.querySelector('.cMjHbjVt9AZ__button');
+
+      if (more_locations_link_el) {
+        results.local_results = {
+          more_locations_link: more_locations_link_el.getAttribute('href'),
+          places: [],
+        };
+      }
+
       // parse google places
       document.querySelectorAll('.rllt__link').forEach((el) => {
-        if (!results.local_results) {
-          results.local_results = [];
-        }
         let rating = '';
         let reviews = null;
         let type = '';
@@ -286,8 +292,7 @@ class GoogleScraperNew {
             }
           }
         }
-
-        results.local_results.push({
+        results.local_results.places.push({
           title: _text(el, '[role="heading"] span'),
           rating: rating,
           reviews: reviews,
