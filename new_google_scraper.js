@@ -314,6 +314,9 @@ class GoogleScraperNew {
           service_options: null,
         };
 
+        place.reviews = parseInt(place.reviews);
+        place.rating = parseFloat(place.rating.replace(',', '.'));
+
         let service_options_els = document.querySelectorAll('.RGCvMc');
         if (service_options_els) {
           place.service_options = {};
