@@ -219,12 +219,12 @@ class GoogleScraperNew {
         local_map.link = map_url;
         let image_el = local_map_el.querySelector('img');
         if (image_el) {
-          local_map.image = image_el.getAttribute('src').slice(0, 20);
+          local_map.image = image_el.getAttribute('src').slice(0, 50);
         }
         let start = map_url.indexOf('rllag=');
         if (start !== -1) {
           let end = map_url.slice(start).indexOf('&');
-          let gps = map_url.slice(start, end).split(',');
+          let gps = map_url.slice(start + 'rllag='.length, end).split(',');
           local_map.gps_coordinates = {
             latitude: gps[0],
             longitude: gps[1],
