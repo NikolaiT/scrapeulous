@@ -317,7 +317,7 @@ class GoogleScraperNew {
         let service_options_els = document.querySelectorAll('.RGCvMc');
         if (service_options_els) {
           place.service_options = {};
-          service_options.forEach((el) => {
+          service_options_els.forEach((el) => {
             let normalized = el.innerText.replace(' ', '_').toLowerCase();
             // @todo: decite upon true or false
             place.service_options[normalized] = true;
