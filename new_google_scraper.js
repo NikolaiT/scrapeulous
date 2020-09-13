@@ -206,6 +206,7 @@ class GoogleScraperNew {
       }
 
       // parsing the local map results
+      // @Todo: decide whether to parse the full image
       let local_map_el = document.querySelector('.H93uF a');
       if (local_map_el) {
         let local_map = {
@@ -215,8 +216,11 @@ class GoogleScraperNew {
         }
         // rllag=50731147,7107100,1622&
         let map_url = local_map_el.getAttribute('href');
-        local_map.map_url = map_url;
-        local_map.image = local_map_el.querySelector('img').getAttribute('src');
+        local_map.link = map_url;
+        let image_el = local_map_el.querySelector('img');
+        if (image_el) {
+          local_map.image = image_el.getAttribute('src').slice(0, 20);
+        }
         let start = map_url.indexOf('rllag=');
         if (start !== -1) {
           let end = map_url.slice(start).indexOf('&');
