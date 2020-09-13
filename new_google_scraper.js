@@ -311,7 +311,18 @@ class GoogleScraperNew {
           // @todo: parsing gps_coordinates is a problem. I cannot find the gps coords in the serp
           // maybe encoded in data-ved="2ahUKEwjv3O3JyuPrAhUHKKwKHbpvC5wQvS4wAHoECAwQLg"
           gps_coordinates: null,
+          service_options: null,
         };
+
+        let service_options_els = document.querySelectorAll('.RGCvMc');
+        if (service_options_els) {
+          place.service_options = {};
+          service_options.forEach((el) => {
+            let normalized = el.innerText.replace(' ', '_').toLowerCase();
+            // @todo: decite upon true or false
+            place.service_options[normalized] = true;
+          });
+        }
 
         results.local_results.places.push(place);
       });
