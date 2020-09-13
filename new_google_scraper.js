@@ -276,7 +276,11 @@ class GoogleScraperNew {
       }
 
       // parse google places
+      let place_position = 0;
       document.querySelectorAll('.rllt__link').forEach((el) => {
+        let place_url = el.getAttribute('href');
+        const urlParams = new URLSearchParams(place_url);
+        place_position++;
         let rating = '';
         let reviews = null;
         let type = '';
@@ -292,15 +296,24 @@ class GoogleScraperNew {
             }
           }
         }
-        results.local_results.places.push({
+
+        let place = {
+          position: place_position,
           title: _text(el, '[role="heading"] span'),
+          place_id: el.getAttribute('data-cid'),
+          lsig: urlParams.get('lsig'),
           rating: rating,
           reviews: reviews,
           type: type,
           address: _text(el, '.rllt__details div:nth-child(2)'),
           hours: _text(el, '.rllt__details div:nth-child(3)'),
           thumbnail: el.querySelector('img').getAttribute('src'),
-        });
+          // @todo: parsing gps_coordinates is a problem. I cannot find the gps coords in the serp
+          // maybe encoded in data-ved="2ahUKEwjv3O3JyuPrAhUHKKwKHbpvC5wQvS4wAHoECAwQLg"
+          gps_coordinates: null,
+        };
+
+        results.local_results.places.push(place);
       });
 
       // parse right side product information
