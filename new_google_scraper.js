@@ -205,6 +205,31 @@ class GoogleScraperNew {
         });
       }
 
+      // parsing the local map results
+      let local_map_el = document.querySelector('.H93uF a');
+      if (local_map_el) {
+        let local_map = {
+          link: '',
+          image: '',
+          gps_coordinates: null,
+        }
+        // rllag=50731147,7107100,1622&
+        let map_url = local_map_el.getAttribute('href');
+        local_map.map_url = map_url;
+        local_map.image = local_map_el.querySelector('img').getAttribute('src');
+        let start = map_url.indexOf('rllag=');
+        if (start !== -1) {
+          let end = map_url.slice(start).indexOf('&');
+          let gps = map_url.slice(start, end).split(',');
+          local_map.gps_coordinates = {
+            latitude: gps[0],
+            longitude: gps[1],
+            altitude: gps[2],
+          }
+        }
+        results.local_map = local_map;
+      }
+
       let add_position = 1;
       // parse ads
       let parseAds = (results, selector, block_position) => {
