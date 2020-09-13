@@ -306,13 +306,17 @@ class GoogleScraperNew {
           reviews: reviews,
           type: type,
           address: _text(el, '.rllt__details div:nth-child(2)'),
-          hours: _text(el, '.rllt__details div:nth-child(3)'),
           thumbnail: el.querySelector('img').getAttribute('src'),
           // @todo: parsing gps_coordinates is a problem. I cannot find the gps coords in the serp
           // maybe encoded in data-ved="2ahUKEwjv3O3JyuPrAhUHKKwKHbpvC5wQvS4wAHoECAwQLg"
           gps_coordinates: null,
           service_options: null,
         };
+
+        let hours = _text(el, '.rllt__details div:nth-child(3)');
+        if (hours) {
+          place.hours = hours;
+        }
 
         place.reviews = parseInt(place.reviews);
         place.rating = parseFloat(place.rating.replace(',', '.'));
@@ -321,7 +325,7 @@ class GoogleScraperNew {
         if (service_options_els) {
           place.service_options = {};
           service_options_els.forEach((el) => {
-            let normalized = el.innerText.replace(' ', '_').toLowerCase();
+            let normalized = el.innerText.replace(' ', '_').toLowerCase().trim();
             // @todo: decite upon true or false
             place.service_options[normalized] = true;
           });
