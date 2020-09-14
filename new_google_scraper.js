@@ -193,13 +193,17 @@ class GoogleScraperNew {
             link: _attr(el, '.r a', 'href'),
             snippet: _text(el, 'span.st'),
             displayed_link: _text(el, '.r cite'),
-            thumbnail: null,
             date: _text(el, 'span.f'),
           };
 
           let date = _text(el, 'span.f');
           if (date) {
             serp_obj.date = date;
+          }
+
+          // @TODO: parse thumbnail
+          if (false) {
+            serp_obj.thumbnail = '';
           }
 
           let page_links = el.querySelectorAll('a.fl');
