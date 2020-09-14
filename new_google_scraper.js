@@ -330,7 +330,7 @@ class GoogleScraperNew {
         if (service_options_els) {
           place.service_options = {};
           service_options_els.forEach((el) => {
-            let normalized = el.innerText.replace(/\s/g, '_').toLowerCase().trim();
+            let normalized = el.innerText.trim().replace(/\s/g, '_').toLowerCase();
             place.service_options[normalized] = el.querySelector('img').getAttribute('src') === positive;
           });
         }
