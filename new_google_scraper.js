@@ -195,9 +195,20 @@ class GoogleScraperNew {
             displayed_link: _text(el, '.r cite'),
             thumbnail: null,
             date: _text(el, 'span.f'),
-            cached_page_link: _attr(el, 'a.fl', 'href'),
-            related_pages_link: null,
           };
+
+          let page_links = el.querySelectorAll('a.fl');
+          if (page_links) {
+            page_links.forEach((el) => {
+              let link = el.getAttribute('href');
+              if (link.indexOf('related:') !== -1) {
+                serp_obj.related_pages_link = link;
+              }
+              if (link.indexOf('cache:') !== -1) {
+                serp_obj.cached_page_link = link;
+              }
+            });
+          }
 
           let sitelinks_el = el.querySelectorAll('.osl a.fl');
           if (sitelinks_el) {
