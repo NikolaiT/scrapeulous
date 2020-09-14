@@ -201,8 +201,10 @@ class GoogleScraperNew {
 
           let sitelinks_el = el.querySelectorAll('.osl a.fl');
           if (sitelinks_el) {
-            serp_obj.sitelinks = {};
             sitelinks_el.forEach((el) => {
+              if (!serp_obj.sitelinks) {
+                serp_obj.sitelinks = {};
+              }
               if (!serp_obj.sitelinks.inline) {
                 serp_obj.sitelinks.inline = [];
               }
