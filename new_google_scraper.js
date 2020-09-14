@@ -201,11 +201,14 @@ class GoogleScraperNew {
           if (page_links) {
             page_links.forEach((el) => {
               let link = el.getAttribute('href');
-              if (link.indexOf('related:') !== -1) {
-                serp_obj.related_pages_link = link;
-              }
-              if (link.indexOf('cache:') !== -1) {
-                serp_obj.cached_page_link = link;
+              if (link) {
+                link = link.trim();
+                if (link.indexOf('related:') !== -1) {
+                  serp_obj.related_pages_link = link;
+                }
+                if (link.indexOf('cache:') !== -1) {
+                  serp_obj.cached_page_link = link;
+                }
               }
             });
           }
