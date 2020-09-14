@@ -198,6 +198,21 @@ class GoogleScraperNew {
             cached_page_link: _attr(el, 'a.fl', 'href'),
             related_pages_link: null,
           };
+
+          let sitelinks_el = el.querySelectorAll('.osl a.fl');
+          if (sitelinks_el) {
+            serp_obj.sitelinks = {};
+            sitelinks_el.forEach((el) => {
+              if (!serp_obj.sitelinks.inline) {
+                serp_obj.sitelinks.inline = [];
+              }
+              serp_obj.sitelinks.inline.push({
+                link: el.getAttribute('href'),
+                title: el.innerText,
+              });
+            });
+          }
+
           if (serp_obj.date) {
             serp_obj.date = serp_obj.date.replace(' - ', '');
           }
@@ -312,7 +327,6 @@ class GoogleScraperNew {
           // @todo: parsing gps_coordinates is a problem. I cannot find the gps coords in the serp
           // maybe encoded in data-ved="2ahUKEwjv3O3JyuPrAhUHKKwKHbpvC5wQvS4wAHoECAwQLg"
           gps_coordinates: null,
-          service_options: null,
         };
 
         let hours = _text(el, '.rllt__details div:nth-child(3)');
