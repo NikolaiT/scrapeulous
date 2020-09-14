@@ -198,11 +198,11 @@ class GoogleScraperNew {
 
           // Todo: fix snippet parsing
           let snippet_el = el.querySelector('span.st');
-          if (false) {
+          if (snippet_el) {
             if (el.childNodes[0].className === 'f') {
               el.removeChild(el.childNodes[0]);
             }
-            serp_obj.snippet = el.innerText;
+            serp_obj.snippet = el.querySelector('span.st').innerText.trim();
           }
 
           let date = _text(el, 'span.f');
