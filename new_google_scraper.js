@@ -197,6 +197,11 @@ class GoogleScraperNew {
             date: _text(el, 'span.f'),
           };
 
+          let date = _text(el, 'span.f');
+          if (date) {
+            serp_obj.date = date;
+          }
+
           let page_links = el.querySelectorAll('a.fl');
           if (page_links) {
             page_links.forEach((el) => {
