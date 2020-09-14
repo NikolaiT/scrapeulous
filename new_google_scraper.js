@@ -191,10 +191,17 @@ class GoogleScraperNew {
             position: index + 1,
             title: _text(el, '.r a h3'),
             link: _attr(el, '.r a', 'href'),
-            snippet: _text(el, 'span.st'),
             displayed_link: _text(el, '.r cite'),
             thumbnail: null,
           };
+
+          let snippet_el = el.querySelector('span.st');
+          if (snippet_el) {
+            if (el.childNodes[0].className === 'f') {
+              el.removeChild(el.childNodes[0]);
+            }
+            serp_obj.snippet = el.innerText;
+          }
 
           let date = _text(el, 'span.f');
           if (date) {
