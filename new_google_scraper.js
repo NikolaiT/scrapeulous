@@ -191,7 +191,6 @@ class GoogleScraperNew {
             position: index + 1,
             title: _text(el, '.r a h3'),
             link: _attr(el, '.r a', 'href'),
-            //snippet: _text(el, 'span.st'),
             displayed_link: _text(el, '.r cite'),
             thumbnail: null,
           };
