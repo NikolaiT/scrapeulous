@@ -193,28 +193,17 @@ class GoogleScraperNew {
             link: _attr(el, '.r a', 'href'),
             displayed_link: _text(el, '.r cite'),
             thumbnail: null,
-            snippet: _text(el, 'span.st'),
           };
 
           // Todo: fix snippet parsing
-          if (serp_obj.snippet.indexOf(' - ') !== -1) {
-            let parts = serp_obj.snippet.split(' - ');
-            if (Array.isArray(parts) && parts.length >= 2) {
-              serp_obj.snippet = parts[1];
-            }
-          }
-
           let snippet_el = el.querySelector('span.st');
-          if (false) {
-            if (el.childNodes[0].className === 'f') {
-              el.removeChild(el.childNodes[0]);
+          if (snippet_el) {
+            let date_node = el.querySelector('span.st span.f');
+            if (date_node) {
+              serp_obj.date = date_node.innerText.replace(' - ', '');
+              date_node.innerText = '';
             }
-            serp_obj.snippet = el.innerText.trim();
-          }
-
-          let date = _text(el, 'span.f');
-          if (date) {
-            serp_obj.date = date;
+            serp_obj.snippet = snippet_el.innerText.trim();
           }
 
           // @TODO: parse thumbnail
@@ -252,10 +241,6 @@ class GoogleScraperNew {
                 title: el.innerText,
               });
             });
-          }
-
-          if (serp_obj.date) {
-            serp_obj.date = serp_obj.date.replace(' - ', '');
           }
 
           results.organic_results.push(serp_obj);
