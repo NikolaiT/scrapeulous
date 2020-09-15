@@ -193,11 +193,12 @@ class GoogleScraperNew {
             link: _attr(el, '.r a', 'href'),
             displayed_link: _text(el, '.r cite'),
             thumbnail: null,
+            snippet: _text(el, 'span.st'),
           };
 
           // Todo: fix snippet parsing
           let snippet_el = el.querySelector('span.st');
-          if (snippet_el) {
+          if (false) {
             if (el.childNodes[0].className === 'f') {
               el.removeChild(el.childNodes[0]);
             }
@@ -249,6 +250,7 @@ class GoogleScraperNew {
           if (serp_obj.date) {
             serp_obj.date = serp_obj.date.replace(' - ', '');
           }
+
           results.organic_results.push(serp_obj);
         });
       }
