@@ -197,6 +197,13 @@ class GoogleScraperNew {
           };
 
           // Todo: fix snippet parsing
+          if (serp_obj.snippet.indexOf(' - ') !== -1) {
+            let parts = serp_obj.snippet.split(' - ');
+            if (Array.isArray(parts) && parts.length >= 2) {
+              serp_obj.snippet = parts[1];
+            }
+          }
+
           let snippet_el = el.querySelector('span.st');
           if (false) {
             if (el.childNodes[0].className === 'f') {
