@@ -407,43 +407,6 @@ class GoogleScraperNew {
         results.miniapps = miniapps_element.innerText;
       }
 
-      // parse all the components of the serp
-
-      let organic_results = await this.parse_organic_results();
-      if (organic_results) {
-        results.organic_results = organic_results;
-      }
-
-      let ads = await this.parse_ads();
-      if (ads) {
-        results.ads = ads;
-      }
-
-      let shopping_results = await this.parse_shopping_results();
-      if (shopping_results) {
-        results.shopping_results = shopping_results;
-      }
-
-      let parse_local_map = await this.parse_local_map();
-      if (parse_local_map) {
-        results.local_map = parse_local_map;
-      }
-
-      let parse_local_results = await this.parse_local_results();
-      if (parse_local_results) {
-        results.local_results = parse_local_results;
-      }
-
-      let parse_related_questions = await this.parse_related_questions();
-      if (parse_related_questions) {
-        results.related_questions = parse_related_questions;
-      }
-
-      let parse_related_searches = await this.parse_related_searches();
-      if (parse_related_searches) {
-        results.related_searches = parse_related_searches;
-      }
-
       // parse pagination
       let pagination_el = document.getElementById('xjs');
       if (pagination_el) {
@@ -500,9 +463,44 @@ class GoogleScraperNew {
       return results;
     });
 
+    // parse all the components of the serp
+    let organic_results = await this.parse_organic_results();
+    if (organic_results) {
+      results.organic_results = organic_results;
+    }
+
+    let ads = await this.parse_ads();
+    if (ads) {
+      results.ads = ads;
+    }
+
+    let shopping_results = await this.parse_shopping_results();
+    if (shopping_results) {
+      results.shopping_results = shopping_results;
+    }
+
+    let parse_local_map = await this.parse_local_map();
+    if (parse_local_map) {
+      results.local_map = parse_local_map;
+    }
+
+    let parse_local_results = await this.parse_local_results();
+    if (parse_local_results) {
+      results.local_results = parse_local_results;
+    }
+
+    let parse_related_questions = await this.parse_related_questions();
+    if (parse_related_questions) {
+      results.related_questions = parse_related_questions;
+    }
+
+    let parse_related_searches = await this.parse_related_searches();
+    if (parse_related_searches) {
+      results.related_searches = parse_related_searches;
+    }
+
     return results;
   }
-
 
   async direct_search(keyword) {
     // first build the proper google search url
