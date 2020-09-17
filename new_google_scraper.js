@@ -96,97 +96,29 @@ class GoogleScraperNew {
     return results;
   }
 
-  async parse(keyword) {
-    let results = await this.page.evaluate(() => {
 
+  async parse_organic_results() {
+    return await this.page.evaluate(() => {
+      let organic_results = [];
       let _text = (el, s) => {
         let n = el.querySelector(s);
-
         if (n) {
           return n.innerText;
         } else {
           return '';
         }
       };
-
       let _attr = (el, s, attr) => {
         let n = el.querySelector(s);
-
         if (n) {
           return n.getAttribute(attr);
         } else {
           return null;
         }
       };
-
-      let results = {
-        search_information: {
-          organic_results_state: "Results for exact spelling",
-          total_results: null,
-          time_taken_displayed: null,
-          query_displayed: null
-        },
-        search_parameters: null,
-      };
-
-      try {
-        results.search_information.query_displayed = document.querySelector('input[name="q"]').value;
-      } catch (err) {
-      }
-
-      let miniapps_element = document.querySelector('[data-async-type="miniapps"]');
-      if (miniapps_element) {
-        results.miniapps = miniapps_element.innerText;
-      }
-
-      // parse related seraches
-      let related_el = document.getElementById('brs');
-      if (related_el) {
-        let related_links = related_el.querySelectorAll('.brs_col a');
-        related_links.forEach((el, index) => {
-          if (!results.related_searches) {
-            results.related_searches = [];
-          }
-          results.related_searches.push({
-            query: el.innerText,
-            link: el.getAttribute('href'),
-          })
-        });
-      }
-
-      // parse pagination
-      let pagination_el = document.getElementById('xjs');
-      if (pagination_el) {
-        let pagination = pagination_el.querySelectorAll('a.fl');
-        pagination.forEach((el, index) => {
-          if (!results.pagination) {
-            results.pagination = {};
-            results.pagination.other_pages = {};
-            try {
-              results.pagination.next = document.getElementById('pnnext').getAttribute('href');
-            } catch (err) {}
-          }
-          results.pagination.other_pages[el.innerText] = el.getAttribute('href');
-        });
-      }
-
-      try {
-        let num_results_el = document.getElementById('result-stats');
-        if (num_results_el) {
-          let num_res_text = num_results_el.innerText;
-          let match = num_res_text.match(/[\d,\.\s]{2,20}/g);
-          if (match) {
-            results.search_information.total_results = match[0].trim();
-            results.search_information.time_taken_displayed = match[1].trim();
-          }
-        }
-      } catch (err) {
-      }
-
-      let organic_results = document.querySelectorAll('#center_col .g');
-      if (organic_results) {
-        results.organic_results = [];
-        organic_results.forEach((el, index) => {
+      let organic_results_els = document.querySelectorAll('#center_col .g');
+      if (organic_results_els) {
+        organic_results_els.forEach((el, index) => {
           let serp_obj = {
             position: index + 1,
             title: _text(el, '.r a h3'),
@@ -242,16 +174,77 @@ class GoogleScraperNew {
               });
             });
           }
-
-          results.organic_results.push(serp_obj);
+          organic_results.push(serp_obj);
         });
       }
+      return organic_results;
+    });
+  }
 
+  async parse_ads() {
+    return await this.page.evaluate(() => {
+      let ads = [];
+      let add_position = 1;
+      // parse ads
+      let parseAds = (ads, selector, block_position) => {
+        document.querySelectorAll(selector).forEach((el) => {
+          let ad_obj = {
+            position: add_position,
+            block_position: block_position,
+            tracking_link: el.querySelector('a').getAttribute('data-rw'),
+            link: el.querySelector('a').getAttribute('href'),
+            sitelinks: [],
+          };
+          // parse ad title
+          try {
+            ad_obj.title = el.querySelector('[role="heading"]').innerText;
+          } catch (err) {
+            ad_obj.title = `Error parsing ad title: ${err.message}`;
+          }
+          // parse ad displayed link
+          try {
+            ad_obj.displayed_link = el.querySelector('a').nextSibling.querySelector('span:nth-child(2)').textContent;
+          } catch (err) {
+            ad_obj.displayed_link = `Error parsing ad displayed_link: ${err.message}`;
+          }
+          // parse ad description
+          try {
+            ad_obj.description = el.querySelector('a').parentNode.nextSibling.innerText;
+          } catch (err) {
+            ad_obj.description = `Error parsing ad description: ${err.message}`;
+          }
+
+          el.querySelectorAll('[role="list"] a').forEach((node) => {
+            ad_obj.sitelinks.push({
+              tracking_link: node.getAttribute('data-arwt'),
+              link: node.getAttribute('href'),
+              title: node.innerText,
+            })
+          });
+          ads.push(ad_obj);
+          add_position++;
+        });
+      };
+
+      parseAds(ads, '#tads li', 'top');
+      parseAds(ads, '#tadsb li', 'bottom');
+
+      return ads;
+    });
+  }
+
+  async parse_shopping_results() {
+
+  }
+
+  async parse_local_map() {
+    return await this.page.evaluate(() => {
+      let local_map = {};
       // parsing the local map results
       // @Todo: decide whether to parse the full image
       let local_map_el = document.querySelector('.H93uF a');
       if (local_map_el) {
-        let local_map = {
+        local_map = {
           link: '',
           image: '',
           gps_coordinates: null,
@@ -273,69 +266,37 @@ class GoogleScraperNew {
             altitude: gps[2],
           }
         }
-        results.local_map = local_map;
       }
+      return local_map;
+    });
+  }
 
-      let add_position = 1;
-      // parse ads
-      let parseAds = (results, selector, block_position) => {
-        document.querySelectorAll(selector).forEach((el) => {
-          if (!results.ads) {
-            results.ads = [];
-          }
-          let ad_obj = {
-            position: add_position,
-            block_position: block_position,
-            tracking_link: el.querySelector('a').getAttribute('data-rw'),
-            link: el.querySelector('a').getAttribute('href'),
-            sitelinks: [],
-          };
-
-          // parse ad title
-          try {
-            ad_obj.title = el.querySelector('[role="heading"]').innerText;
-          } catch (err) {
-            ad_obj.title = `Error parsing ad title: ${err.message}`;
-          }
-
-          // parse ad displayed link
-          try {
-            ad_obj.displayed_link = el.querySelector('a').nextSibling.querySelector('span:nth-child(2)').textContent;
-          } catch (err) {
-            ad_obj.displayed_link = `Error parsing ad displayed_link: ${err.message}`;
-          }
-
-          // parse ad description
-          try {
-            ad_obj.description = el.querySelector('a').parentNode.nextSibling.innerText;
-          } catch (err) {
-            ad_obj.description = `Error parsing ad description: ${err.message}`;
-          }
-
-          el.querySelectorAll('[role="list"] a').forEach((node) => {
-            ad_obj.sitelinks.push({
-              tracking_link: node.getAttribute('data-arwt'),
-              link: node.getAttribute('href'),
-              title: node.innerText,
-            })
-          });
-          results.ads.push(ad_obj);
-          add_position++;
-        });
+  async parse_local_results() {
+    return await this.page.evaluate(() => {
+      let _text = (el, s) => {
+        let n = el.querySelector(s);
+        if (n) {
+          return n.innerText;
+        } else {
+          return '';
+        }
       };
-
-      parseAds(results, '#tads li', 'top');
-      parseAds(results, '#tadsb li', 'bottom');
-
+      let _attr = (el, s, attr) => {
+        let n = el.querySelector(s);
+        if (n) {
+          return n.getAttribute(attr);
+        } else {
+          return null;
+        }
+      };
+      let local_results = {};
       let more_locations_link_el = document.querySelector('.cMjHbjVt9AZ__button');
-
       if (more_locations_link_el) {
-        results.local_results = {
+        local_results = {
           more_locations_link: more_locations_link_el.getAttribute('href'),
           places: [],
         };
       }
-
       // parse google places
       let place_position = 0;
       document.querySelectorAll('.rllt__link').forEach((el) => {
@@ -359,7 +320,6 @@ class GoogleScraperNew {
             }
           }
         }
-
         let place = {
           position: place_position,
           title: _text(el, '[role="heading"] span'),
@@ -395,43 +355,122 @@ class GoogleScraperNew {
             place.service_options[normalized] = el.querySelector('img').getAttribute('src') === positive;
           });
         }
-        results.local_results.places.push(place);
+        local_results.places.push(place);
       });
+      return local_results;
+    });
+  }
 
-      // parse right side product information
-      if (document.querySelector('#rhs .cu-container')) {
-        results.right_info = {};
-        results.right_info.review = _attr(document, '#rhs .cu-container g-review-stars span', 'aria-label');
+  async parse_related_questions() {
+    return await this.page.evaluate(() => {
+      return {};
+    });
+  }
 
-        let title_el = document.querySelector('#rhs .cu-container g-review-stars');
-        if (title_el) {
-          results.right_info.review.title = title_el.parentNode.querySelector('div:first-child').innerText;
-        }
-
-        let num_reviews_el = document.querySelector('#rhs .cu-container g-review-stars');
-        if (num_reviews_el) {
-          results.right_info.num_reviews = num_reviews_el.parentNode.querySelector('div:nth-of-type(2)').innerText;
-        }
-
-        results.right_info.vendors = [];
-        results.right_info.info = _text(document, '#rhs_block > div > div > div > div:nth-child(5) > div > div');
-
-        document.querySelectorAll('#rhs .cu-container .rhsvw > div > div:nth-child(4) > div > div:nth-child(3) > div').forEach((el) => {
-          results.right_info.vendors.push({
-            price: _text(el, 'span:nth-of-type(1)'),
-            merchant_name: _text(el, 'span:nth-child(3) a:nth-child(2)'),
-            merchant_ad_link: _attr(el, 'span:nth-child(3) a:first-child', 'href'),
-            merchant_link: _attr(el, 'span:nth-child(3) a:nth-child(2)', 'href'),
-            source_name: _text(el, 'span:nth-child(4) a'),
-            source_link: _attr(el, 'span:nth-child(4) a', 'href'),
-            info: _text(el, 'div span'),
-            shipping: _text(el, 'span:last-child > span'),
+  async parse_related_searches() {
+    return await this.page.evaluate(() => {
+      let related_searches = [];
+      // parse related seraches
+      let related_el = document.getElementById('brs');
+      if (related_el) {
+        let related_links = related_el.querySelectorAll('.brs_col a');
+        related_links.forEach((el, index) => {
+          related_searches.push({
+            query: el.innerText,
+            link: el.getAttribute('href'),
           })
         });
+      }
+      return related_searches;
+    });
+  }
 
-        if (!results.right_info.title) {
-          results.right_info = {};
+  async parse(keyword) {
+    let results = await this.page.evaluate(() => {
+      let results = {
+        search_information: {
+          organic_results_state: "Results for exact spelling",
+          total_results: null,
+          time_taken_displayed: null,
+          query_displayed: null
+        },
+        search_parameters: null,
+      };
+
+      try {
+        results.search_information.query_displayed = document.querySelector('input[name="q"]').value;
+      } catch (err) {
+      }
+
+      let miniapps_element = document.querySelector('[data-async-type="miniapps"]');
+      if (miniapps_element) {
+        results.miniapps = miniapps_element.innerText;
+      }
+
+      // parse all the components of the serp
+
+      let or = await this.parse_organic_results();
+      if (or) {
+        results.organic_results = or;
+      }
+
+      let ads = await this.parse_ads();
+      if (ads) {
+        results.ads = ads;
+      }
+
+      let shopping_results = await this.parse_shopping_results();
+      if (shopping_results) {
+        results.shopping_results = shopping_results;
+      }
+
+      let parse_local_map = await this.parse_local_map();
+      if (parse_local_map) {
+        results.local_map = parse_local_map;
+      }
+
+      let parse_local_results = await this.parse_local_results();
+      if (parse_local_results) {
+        results.local_results = parse_local_results;
+      }
+
+      let parse_related_questions = await this.parse_related_questions();
+      if (parse_related_questions) {
+        results.related_questions = parse_related_questions;
+      }
+
+      let parse_related_searches = await this.parse_related_searches();
+      if (parse_related_searches) {
+        results.related_searches = parse_related_searches;
+      }
+
+      // parse pagination
+      let pagination_el = document.getElementById('xjs');
+      if (pagination_el) {
+        let pagination = pagination_el.querySelectorAll('a.fl');
+        pagination.forEach((el, index) => {
+          if (!results.pagination) {
+            results.pagination = {};
+            results.pagination.other_pages = {};
+            try {
+              results.pagination.next = document.getElementById('pnnext').getAttribute('href');
+            } catch (err) {}
+          }
+          results.pagination.other_pages[el.innerText] = el.getAttribute('href');
+        });
+      }
+
+      try {
+        let num_results_el = document.getElementById('result-stats');
+        if (num_results_el) {
+          let num_res_text = num_results_el.innerText;
+          let match = num_res_text.match(/[\d,\.\s]{2,20}/g);
+          if (match) {
+            results.search_information.total_results = match[0].trim();
+            results.search_information.time_taken_displayed = match[1].trim();
+          }
         }
+      } catch (err) {
       }
 
       let right_side_info_el = document.getElementById('rhs');
@@ -441,61 +480,6 @@ class GoogleScraperNew {
           results.right_side_info_text = right_side_info_text;
         }
       }
-
-      // parse top main column product information
-      // #tvcap .pla-unit
-      document.querySelectorAll('#tvcap .pla-unit').forEach((el) => {
-        if (!results.top_products) {
-          results.top_products = [];
-        }
-
-        let top_product = {
-          tracking_link: _attr(el, '.pla-unit-title a:first-child', 'href'),
-          link: _attr(el, '.pla-unit-title a:nth-child(2)', 'href'),
-          title: _text(el, '.pla-unit-title a:nth-child(2) span'),
-          price: _text(el, '.pla-unit-title + div'),
-          shipping: _text(el, '.pla-extensions-container div:nth-of-type(1)'),
-          vendor_link: _attr(el,'.pla-extensions-container div > a', 'href'),
-        };
-
-        let merchant_node = el.querySelector('.pla-unit-title');
-        if (merchant_node) {
-          let node = merchant_node.parentNode.querySelector('div > span');
-          if (node) {
-            top_product.merchant_name = node.innerText;
-          }
-        }
-
-        results.top_products.push(top_product);
-      });
-
-      // parse top right product information
-      // #tvcap .pla-unit
-      document.querySelectorAll('#rhs_block .pla-unit').forEach((el) => {
-        if (!results.right_products) {
-          results.right_products = [];
-        }
-
-        let right_product = {
-          tracking_link: _attr(el, '.pla-unit-title a:first-child', 'href'),
-          link: _attr(el, '.pla-unit-title a:nth-child(2)', 'href'),
-          title: _text(el, '.pla-unit-title a:nth-child(2) span:first-child'),
-          price: _text(el,'.pla-unit-title + div'),
-          shipping: _text(el,'.pla-extensions-container > div'),
-          vendor_link: _text(el,'.pla-extensions-container div > a'),
-          vendor_name: _text(el,'.pla-extensions-container div > a > div'),
-        };
-
-        let merchant_node = el.querySelector('.pla-unit-title');
-        if (merchant_node) {
-          let node = merchant_node.parentNode.querySelector('div > span:first-child');
-          if (node) {
-            right_product.merchant_name = node.innerText;
-          }
-        }
-
-        results.right_products.push(right_product);
-      });
 
       let effective_query_el = document.getElementById('fprsl');
       let effective_query = '';
@@ -515,14 +499,6 @@ class GoogleScraperNew {
 
       return results;
     });
-
-    // clean some results
-    if (Array.isArray(results.ads)) {
-      results.ads = this.clean_results(results.ads, ['title', 'link']);
-    }
-    if (Array.isArray(results.organic_results)) {
-      results.organic_results = this.clean_results(results.organic_results, ['title', 'link' , 'snippet']);
-    }
 
     return results;
   }
@@ -572,29 +548,6 @@ class GoogleScraperNew {
     await this.page.evaluate((value, selector) => {
       return document.querySelector(selector).value = value;
     }, value, selector);
-  }
-
-  /*
-      Throw away all elements that do not have data in the
-      specified attributes. Most be of value string.
-   */
-  clean_results(results, attributes) {
-    if (Array.isArray(results)) {
-      let cleaned = [];
-      for (let res of results) {
-        let goodboy = true;
-        for (let attr of attributes) {
-          if (!res[attr] || !res[attr].trim()) {
-            goodboy = false;
-            break;
-          }
-        }
-        if (goodboy) {
-          cleaned.push(res);
-        }
-      }
-      return cleaned;
-    }
   }
 
   async search_keyword(keyword) {
