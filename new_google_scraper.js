@@ -96,6 +96,28 @@ class GoogleScraperNew {
     return results;
   }
 
+  /*
+      Throw away all elements that do not have data in the
+      specified attributes. Most be of value string.
+   */
+  clean_results(results, attributes) {
+    if (Array.isArray(results)) {
+      let cleaned = [];
+      for (let res of results) {
+        let goodboy = true;
+        for (let attr of attributes) {
+          if (!res[attr] || !res[attr].trim()) {
+            goodboy = false;
+            break;
+          }
+        }
+        if (goodboy) {
+          cleaned.push(res);
+        }
+      }
+      return cleaned;
+    }
+  }
 
   async parse_organic_results() {
     return await this.page.evaluate(() => {
@@ -497,6 +519,14 @@ class GoogleScraperNew {
     let parse_related_searches = await this.parse_related_searches();
     if (parse_related_searches) {
       results.related_searches = parse_related_searches;
+    }
+
+    // clean some serp results
+    if (Array.isArray(results.ads)) {
+      results.ads = this.clean_results(results.ads, ['title', 'link']);
+    }
+    if (Array.isArray(results.organic_results)) {
+      results.organic_results = this.clean_results(results.organic_results, ['title', 'link' , 'snippet']);
     }
 
     return results;
