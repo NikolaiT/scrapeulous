@@ -295,22 +295,6 @@ class GoogleScraperNew {
 
   async parse_local_results() {
     return await this.page.evaluate(() => {
-      let _text = (el, s) => {
-        let n = el.querySelector(s);
-        if (n) {
-          return n.innerText;
-        } else {
-          return '';
-        }
-      };
-      let _attr = (el, s, attr) => {
-        let n = el.querySelector(s);
-        if (n) {
-          return n.getAttribute(attr);
-        } else {
-          return null;
-        }
-      };
       let local_results = {};
       let more_locations_link_el = document.querySelector('.cMjHbjVt9AZ__button');
       if (more_locations_link_el) {
@@ -327,7 +311,6 @@ class GoogleScraperNew {
         place_position++;
         let place = {
           position: place_position,
-          title: _text(el, '[role="heading"] span'),
           place_id: el.getAttribute('data-cid'),
           lsig: urlParams.get('lsig'),
           thumbnail: el.querySelector('img').getAttribute('src'),
@@ -335,6 +318,11 @@ class GoogleScraperNew {
           // maybe encoded in data-ved="2ahUKEwjv3O3JyuPrAhUHKKwKHbpvC5wQvS4wAHoECAwQLg"
           gps_coordinates: null,
         };
+
+        let title_el = el.querySelector('[role="heading"] span');
+        if (title_el) {
+          place.title = title_el.innerText.trim();
+        }
 
         let first_row_el = el.querySelector('.rllt__details div:first-child');
         if (first_row_el) {
@@ -363,9 +351,9 @@ class GoogleScraperNew {
           place.description = desc_el.innerText.trim();
         }
 
-        let hours = _text(el, '.rllt__details div:nth-child(3)');
-        if (hours) {
-          place.hours = hours;
+        let hours_el = el.querySelector('.rllt__details div:nth-child(3)');
+        if (hours_el) {
+          place.hours = hours_el.innerText.trim();
         }
 
         const positive = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAIVBMVEUAAAAzplM0qFQ0qFM0qFM1qFM0qFQ1qlU0qFM0qFMwr1BfNzQuAAAAC3RSTlMAKGfn/2+PGK/XELDg06MAAABgSURBVHgB7cuxDUBQAEXRp6FnFSM8Ep0RFAZQGkTyZ7AlyWtvoZZ/+qMvql6sGVehwZM4eOZgb38L58GhuwqH28tBQa1dKEj7WyCkUEhJgJIAJQFKApQEKAlQEqAkqHoA3HYhBITCjCcAAAAASUVORK5CYII=';
