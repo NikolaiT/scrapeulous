@@ -1,7 +1,7 @@
 /**
  * @author Nikolai Tschacher
  * @version 1.3
- * @last_modified Sep 2020
+ * @last_modified Oct 2020
  * @website: incolumitas.com
  *
  * Searches on Google and extracts search results from the SERP.
@@ -286,13 +286,32 @@ class GoogleScraperNew {
           let ad_obj = {
             position: add_position,
             block_position: block_position,
-            displayed_link: el.querySelector('a').nextSibling.querySelector('span:nth-child(2)').textContent,
             tracking_link: el.querySelector('a').getAttribute('data-rw'),
             link: el.querySelector('a').getAttribute('href'),
-            title: el.querySelector('[role="heading"]').innerText,
-            description: el.querySelector('a').parentNode.nextSibling.innerText,
             sitelinks: [],
           };
+
+          // parse ad title
+          try {
+            ad_obj.title = el.querySelector('[role="heading"]').innerText;
+          } catch (err) {
+            ad_obj.title = `Error parsing ad title: ${err.message}`;
+          }
+
+          // parse ad displayed link
+          try {
+            ad_obj.displayed_link = el.querySelector('a').nextSibling.querySelector('span:nth-child(2)').textContent;
+          } catch (err) {
+            ad_obj.displayed_link = `Error parsing ad displayed_link: ${err.message}`;
+          }
+
+          // parse ad description
+          try {
+            ad_obj.description = el.querySelector('a').parentNode.nextSibling.innerText;
+          } catch (err) {
+            ad_obj.description = `Error parsing ad description: ${err.message}`;
+          }
+
           el.querySelectorAll('[role="list"] a').forEach((node) => {
             ad_obj.sitelinks.push({
               tracking_link: node.getAttribute('data-arwt'),
