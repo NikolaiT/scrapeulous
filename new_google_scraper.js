@@ -312,12 +312,16 @@ class GoogleScraperNew {
         let place = {
           position: place_position,
           place_id: el.getAttribute('data-cid'),
-          lsig: urlParams.get('lsig'),
           thumbnail: el.querySelector('img').getAttribute('src'),
           // @todo: parsing gps_coordinates is a problem. I cannot find the gps coords in the serp
           // maybe encoded in data-ved="2ahUKEwjv3O3JyuPrAhUHKKwKHbpvC5wQvS4wAHoECAwQLg"
           gps_coordinates: null,
         };
+
+        let lsig = urlParams.get('lsig');
+        if (lsig) {
+          place.lsig = lsig;
+        }
 
         let title_el = el.querySelector('[role="heading"] span');
         if (title_el) {
