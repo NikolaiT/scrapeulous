@@ -325,45 +325,48 @@ class GoogleScraperNew {
         let place_url = el.getAttribute('href');
         const urlParams = new URLSearchParams(place_url);
         place_position++;
-        let rating = '';
-        let reviews = null;
-        let type = '';
-        let meta_info = _text(el, '.rllt__details div:first-child');
-        if (meta_info) {
-          let parts = meta_info.split('\n');
-          if (Array.isArray(parts) && parts.length > 1) {
-            rating = parts[0].trim();
-            let more = parts[1].split('·');
-            if (more.length > 0) {
-              reviews = more[0].trim().replace('(', '').replace(')', '');
-            }
-            if (more.length > 2) {
-              type = more[2].trim();
-            }
-          }
-        }
         let place = {
           position: place_position,
           title: _text(el, '[role="heading"] span'),
           place_id: el.getAttribute('data-cid'),
           lsig: urlParams.get('lsig'),
-          rating: rating,
-          reviews: reviews,
-          type: type,
-          address: _text(el, '.rllt__details div:nth-child(2)'),
           thumbnail: el.querySelector('img').getAttribute('src'),
           // @todo: parsing gps_coordinates is a problem. I cannot find the gps coords in the serp
           // maybe encoded in data-ved="2ahUKEwjv3O3JyuPrAhUHKKwKHbpvC5wQvS4wAHoECAwQLg"
           gps_coordinates: null,
         };
 
+        let first_row_el = el.querySelector('.rllt__details div:first-child');
+        if (first_row_el) {
+          let rating_el = first_row_el.querySelector('span:first-child');
+          if (rating_el) {
+            place.rating = rating_el.innerText.trim();
+            place.rating = parseFloat(place.rating.replace(',', '.'));
+          }
+          let reviews_el = first_row_el.querySelector('span:nth-child(3)');
+          if (reviews_el) {
+            place.reviews = reviews_el.innerText.replace('(', '').replace(')', '');
+            place.reviews = parseInt(place.reviews);
+          }
+          place.type = first_row_el.innerText.split(' · ').slice(-1).pop();
+        }
+
+        let second_row_el = el.querySelector('.rllt__details div:nth-child(2)');
+        if (second_row_el) {
+          let parts = second_row_el.innerText.trim().split(' · ');
+          place.phone = parts.pop();
+          place.address = parts.pop();
+        }
+
+        let desc_el = el.querySelector('.rllt__wrapped.RGCvMc')
+        if (desc_el) {
+          place.description = desc_el.innerText.trim();
+        }
+
         let hours = _text(el, '.rllt__details div:nth-child(3)');
         if (hours) {
           place.hours = hours;
         }
-
-        place.reviews = parseInt(place.reviews);
-        place.rating = parseFloat(place.rating.replace(',', '.'));
 
         const positive = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAIVBMVEUAAAAzplM0qFQ0qFM0qFM1qFM0qFQ1qlU0qFM0qFMwr1BfNzQuAAAAC3RSTlMAKGfn/2+PGK/XELDg06MAAABgSURBVHgB7cuxDUBQAEXRp6FnFSM8Ep0RFAZQGkTyZ7AlyWtvoZZ/+qMvql6sGVehwZM4eOZgb38L58GhuwqH28tBQa1dKEj7WyCkUEhJgJIAJQFKApQEKAlQEqAkqHoA3HYhBITCjCcAAAAASUVORK5CYII=';
         const negative = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAOVBMVEUAAAD/AADYMCTbLiT/MwDZLyXZMCXZMCTYLyTYLiTZLyXYLiPYLyXYMCXZLyTZLyTZMCTZMCTZLyTtMV/0AAAAE3RSTlMABKtUBbT//LJOrkj5+/j+r7aoVQEegwAAAKFJREFUeAHtlDUSxDAQBIUjM/3/rwepqk2b2hP3MrgH6pUP0YFi8MynrBKBL8oJDRpJpXWV2iKpQ4N+kDS2FT9KGnp3bsE8WzDPFn9g7C/wiFTmpxbUhAOLA54aP/QHPIxWmgYc44GFhIvCijPzByHYwJ4StGmasGgeBLTVMDjDahiWz7DepgOynyg/gbJvseCoIr+Z40e2pnuvcvPu1fP0BdTsCq8gHj6QAAAAAElFTkSuQmCC';
