@@ -409,9 +409,9 @@ class GoogleScraperNew {
 
       // parse all the components of the serp
 
-      let or = await this.parse_organic_results();
-      if (or) {
-        results.organic_results = or;
+      let organic_results = await this.parse_organic_results();
+      if (organic_results) {
+        results.organic_results = organic_results;
       }
 
       let ads = await this.parse_ads();
