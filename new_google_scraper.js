@@ -278,10 +278,10 @@ class GoogleScraperNew {
         if (image_el) {
           local_map.image = image_el.getAttribute('src').slice(0, 50);
         }
-        let start = map_url.indexOf('rllag=');
-        if (start !== -1) {
-          let end = map_url.slice(start).indexOf('&');
-          let gps = map_url.slice(start + 'rllag='.length, end).split(',');
+        const urlParams = new URLSearchParams(map_url);
+        let rllag = urlParams.get('rllag');
+        let gps = rllag.split(',');
+        if (gps.length === 3) {
           local_map.gps_coordinates = {
             latitude: gps[0],
             longitude: gps[1],
