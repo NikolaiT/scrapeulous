@@ -278,7 +278,7 @@ class GoogleScraperNew {
         local_map.link = map_url;
         let image_el = local_map_el.querySelector('img');
         if (image_el) {
-          local_map.image = image_el.getAttribute('src').slice(0, 50);
+          local_map.image = image_el.getAttribute('src');
         }
         const urlParams = new URLSearchParams(map_url);
         let rllag = urlParams.get('rllag');
