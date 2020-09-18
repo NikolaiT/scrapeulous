@@ -369,7 +369,10 @@ class GoogleScraperNew {
 
         let hours_el = el.querySelector('.rllt__details div:nth-child(3)');
         if (hours_el) {
-          place.hours = hours_el.innerText.trim();
+          let hours = hours_el.innerText.trim();
+          if (hours) {
+            place.hours = hours;
+          }
         }
 
         const positive = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAIVBMVEUAAAAzplM0qFQ0qFM0qFM1qFM0qFQ1qlU0qFM0qFMwr1BfNzQuAAAAC3RSTlMAKGfn/2+PGK/XELDg06MAAABgSURBVHgB7cuxDUBQAEXRp6FnFSM8Ep0RFAZQGkTyZ7AlyWtvoZZ/+qMvql6sGVehwZM4eOZgb38L58GhuwqH28tBQa1dKEj7WyCkUEhJgJIAJQFKApQEKAlQEqAkqHoA3HYhBITCjCcAAAAASUVORK5CYII=';
