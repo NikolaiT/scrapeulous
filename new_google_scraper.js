@@ -292,7 +292,7 @@ class GoogleScraperNew {
           local_map.gps_coordinates = {
             latitude: parseFloat(insert(gps[0], 2, '.')),
             longitude: parseFloat(insert(gps[1], 2, '.')),
-            altitude: gps[2],
+            altitude: parseFloat(gps[2]),
           }
         }
       }
