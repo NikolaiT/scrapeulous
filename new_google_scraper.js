@@ -256,7 +256,9 @@ class GoogleScraperNew {
   }
 
   async parse_shopping_results() {
-
+    return await this.page.evaluate(() => {
+      let shopping_results = {};
+    });
   }
 
   async parse_local_map() {
@@ -346,8 +348,12 @@ class GoogleScraperNew {
         let second_row_el = el.querySelector('.rllt__details div:nth-child(2)');
         if (second_row_el) {
           let parts = second_row_el.innerText.trim().split(' · ');
-          place.phone = parts.pop();
-          place.address = parts.pop();
+          if (parts.length === 1) {
+            place.address = parts.pop();
+          } else {
+            place.phone = parts.pop();
+            place.address = parts.pop();
+          }
         }
 
         let desc_el = el.querySelector('.rllt__wrapped.RGCvMc')
