@@ -456,6 +456,10 @@ class GoogleScraperNew {
             try {
               results.pagination.next = document.getElementById('pnnext').getAttribute('href');
             } catch (err) {}
+
+            try {
+              results.pagination.current = parseInt(document.querySelector('.YyVfkd').innerText);
+            } catch (err) {}
           }
           results.pagination.other_pages[el.innerText] = el.getAttribute('href');
         });
