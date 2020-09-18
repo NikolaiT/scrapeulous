@@ -324,6 +324,7 @@ class GoogleScraperNew {
           // @todo: parsing gps_coordinates is a problem. I cannot find the gps coords in the serp
           // maybe encoded in data-ved="2ahUKEwjv3O3JyuPrAhUHKKwKHbpvC5wQvS4wAHoECAwQLg"
           gps_coordinates: null,
+          rating: 0.0,
         };
 
         let lsig = urlParams.get('lsig');
