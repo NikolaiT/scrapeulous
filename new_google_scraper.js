@@ -399,6 +399,12 @@ class GoogleScraperNew {
     });
   }
 
+  async parse_related_search_boxes() {
+    return await this.page.evaluate(() => {
+      return [];
+    });
+  }
+
   async parse_related_searches() {
     return await this.page.evaluate(() => {
       let related_searches = [];
@@ -529,6 +535,11 @@ class GoogleScraperNew {
     let parse_related_searches = await this.parse_related_searches();
     if (parse_related_searches) {
       results.related_searches = parse_related_searches;
+    }
+
+    let parse_related_search_boxes = await this.parse_related_search_boxes();
+    if (parse_related_search_boxes) {
+      results.related_search_boxes = parse_related_search_boxes;
     }
 
     // clean some serp results
