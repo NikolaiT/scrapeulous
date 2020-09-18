@@ -384,14 +384,18 @@ class GoogleScraperNew {
             let service_image_el = el.querySelector('img.rISBZc');
             if (service_image_el) {
               let src = service_image_el.getAttribute('src');
-              if (!place.service_options) {
-                place.service_options = {};
-              }
               let normalized = el.innerText.trim().replace(/\s/g, '_').toLowerCase();
+              let service_bool = null;
               if (src === positive) {
-                place.service_options[normalized] = true;
+                service_bool = true;
               } else if (src === negative) {
-                place.service_options[normalized] = false;
+                service_bool = false;
+              }
+              if (service_bool !== null) {
+                if (!place.service_options) {
+                  place.service_options = {};
+                }
+                place.service_options[normalized] = service_bool;
               }
             }
           });
