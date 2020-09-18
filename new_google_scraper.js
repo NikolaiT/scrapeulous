@@ -283,10 +283,15 @@ class GoogleScraperNew {
         const urlParams = new URLSearchParams(map_url);
         let rllag = urlParams.get('rllag');
         let gps = rllag.split(',');
+
+        function insert(str, index, value) {
+          return str.substr(0, index) + value + str.substr(index);
+        }
+
         if (gps.length === 3) {
           local_map.gps_coordinates = {
-            latitude: gps[0],
-            longitude: gps[1],
+            latitude: parseFloat(insert(gps[0], 2, '.')),
+            longitude: parseFloat(insert(gps[1], 2, '.')),
             altitude: gps[2],
           }
         }
