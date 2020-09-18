@@ -388,7 +388,11 @@ class GoogleScraperNew {
                 place.service_options = {};
               }
               let normalized = el.innerText.trim().replace(/\s/g, '_').toLowerCase();
-              place.service_options[normalized] = (src === positive);
+              if (src === positive) {
+                place.service_options[normalized] = true;
+              } else if (src === negative) {
+                place.service_options[normalized] = false;
+              }
             }
           });
         }
