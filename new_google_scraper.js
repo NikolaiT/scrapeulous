@@ -196,7 +196,12 @@ class GoogleScraperNew {
               });
             });
           }
-          organic_results.push(serp_obj);
+
+          // only ad the organic result if it includes
+          // title, link and a snippet
+          if (serp_obj.title && serp_obj.snippet && serp_obj.link) {
+            organic_results.push(serp_obj);
+          }
         });
       }
       return organic_results;
@@ -562,9 +567,6 @@ class GoogleScraperNew {
     // clean some serp results
     if (Array.isArray(results.ads)) {
       results.ads = this.clean_results(results.ads, ['title', 'link']);
-    }
-    if (Array.isArray(results.organic_results)) {
-      results.organic_results = this.clean_results(results.organic_results, ['title', 'link' , 'snippet']);
     }
 
     return results;
