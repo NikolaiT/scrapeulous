@@ -18,7 +18,7 @@ class ReverseImageGoogle {
     await this.page.waitForSelector('#rcnt');
     await this.page.waitFor(50);
     // click on the link to get similar pictures
-    await this.page.click('a.ekf0x.hSQtef');
+    await this.page.click('title-with-lhs-icon > a', {timeout: 10000});
 
     await this.page.waitForNavigation();
     await this.page.waitForSelector('div[data-ri] a');
