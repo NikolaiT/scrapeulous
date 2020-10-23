@@ -6,7 +6,7 @@
  */
 class ReverseImageGoogle {
   async crawl(url) {
-    await this.page.goto('https://www.google.com/imghp?hl=en&tab=wi&ogbl', { waitUntil: 'networkidle2' });
+    await this.page.goto('https://www.google.com/imghp?hl=en&tab=wi&ogbl', {waitUntil: 'domcontentloaded'});
     await this.page.waitForSelector('[aria-label="Search by image"]');
     await this.page.click('[aria-label="Search by image"]');
     await this.page.waitFor(50);

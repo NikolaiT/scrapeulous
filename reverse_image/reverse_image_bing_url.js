@@ -24,7 +24,7 @@ class ReverseImageBingUrl {
   }
 
   async crawl(url) {
-    await this.page.goto('https://www.bing.com/images?', { waitUntil: 'networkidle2' });
+    await this.page.goto('https://www.bing.com/images?', {waitUntil: 'domcontentloaded'});
 
     await this.page.$eval('#sb_form_q', (el, value) => el.value = value, url);
 
