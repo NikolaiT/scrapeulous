@@ -160,6 +160,8 @@ class GoogleScraperNew {
             serp_obj.snippet = snippet_el.innerText.trim();
           }
 
+          // parse the rich snippet
+
           // @TODO: parse thumbnail
           if (false) {
             serp_obj.thumbnail = '';

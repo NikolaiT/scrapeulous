@@ -4,7 +4,7 @@
  * @param url: url to the image file to be reverse image searched
  * @param options: Holds all configuration data and options
  */
-class Render extends BrowserWorker {
+class ReverseImageBingUrl {
   async copy() {
     await this.page.keyboard.down('Control');
     await this.page.keyboard.press('KeyC');
@@ -53,22 +53,31 @@ class Render extends BrowserWorker {
         }
       }
       let res = [];
-      let candidates = document.querySelectorAll('#i_results div.richImage') || [];
-
-      for (let i = 0; i < candidates.length; i++) {
-        let c = candidates[i];
-        let obj = {rank: i+1};
-
-        try {
-          let href = c.querySelector('.richImgLnk').getAttribute('href');
+      let candidates = document.querySelectorAll('#i_results div.richImage');
+      let rank = 0;
+      candidates.forEach((el) => {
+        let image_el = el.querySelector('.richImgLnk');
+        if (image_el) {
+          rank++;
+          let obj = {
+            rank: rank
+          };
+          let href = image_el.getAttribute('href');
           obj.imgurl = get_imgurl(href);
-          obj.imgtext = c.querySelector('.captionContainer').innerText;
-          obj.imgrefurl = c.querySelector('.captionContainer a').getAttribute('href');
-        } catch (e) {
-          console.log(e.toString());
+
+          let img_text_el = el.querySelector('.captionContainer');
+          if (img_text_el) {
+            obj.imgtext = img_text_el.innerText.trim();
+          }
+
+          let img_refurl_el = el.querySelector('.captionContainer a');
+          if (img_refurl_el) {
+            obj.imgrefurl = img_refurl_el.getAttribute('href');
+          }
+
+          res.push(obj);
         }
-        res.push(obj);
-      }
+      });
       return res;
     });
   }
