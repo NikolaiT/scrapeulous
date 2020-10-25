@@ -9,28 +9,26 @@ class ReverseImageGoogle {
     await this.page.goto('https://www.google.com/imghp?hl=en&tab=wi&ogbl', {waitUntil: 'domcontentloaded'});
     await this.page.waitForSelector('[aria-label="Search by image"]');
     await this.page.click('[aria-label="Search by image"]');
-    await this.page.waitFor(50);
     await this.page.waitForSelector('input[name="image_url"]');
     await this.page.type('input[name="image_url"]', url);
-    await this.page.waitFor(50);
     await this.page.click('input[value="Search by image"]');
     await this.page.waitForNavigation();
+    try {
+      await this.page.waitForSelector('#lb', {timeout: 3000});
+    } catch (err) {
 
-    const btn = await Promise.race([
-      this.page.waitForSelector('#introAgreeButton'),
-      this.page.waitForSelector('title-with-lhs-icon > a')
-    ]);
-
-    console.log(btn.id);
-
-    if (btn.id === 'introAgreeButton') {
-      await btn.click();
-      await this.page.waitForSelector('title-with-lhs-icon > a');
-      await this.page.click('title-with-lhs-icon > a');
-    } else {
-      await btn.click();
     }
 
+    // delete consent stuff
+    // very hacky :)
+    await this.page.evaluate(() => {
+      let el = document.getElementById('lb');
+      if (el) {
+        el.parentNode.removeChild(el);
+      }
+    });
+
+    await this.page.click('title-with-lhs-icon > a');
     await this.page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 12000 });
     await this.page.waitForSelector('div[data-ri] a');
     await this.page.waitFor(150);
