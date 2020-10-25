@@ -15,14 +15,14 @@ class ReverseImageGoogle {
     await this.page.waitFor(50);
     await this.page.click('input[value="Search by image"]');
     await this.page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 12000 });
-	const btn = await Promise.race([
-	      this.page.waitForSelector('#introAgreeButton'),
-	      this.page.waitForSelector('title-with-lhs-icon > a')
-	]);
+  	const btn = await Promise.race([
+  	      this.page.waitForSelector('#introAgreeButton'),
+  	      this.page.waitForSelector('title-with-lhs-icon > a')
+  	]);
 
-	if (await page.$('#introAgreeButton') !== null) {
-	  await this.page.click('#introAgreeButton');
-	}
+  	if (await page.$('#introAgreeButton') !== null) {
+  	  await this.page.click('#introAgreeButton');
+  	}
 
     // click on the link to get similar pictures
     await this.page.click('title-with-lhs-icon > a');
