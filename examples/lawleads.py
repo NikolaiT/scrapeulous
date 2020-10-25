@@ -5,14 +5,17 @@ Invoke with:
 
 python lawleads.py {{API_KEY}}
 
-This program searches the items on google and visits 
-each url and extracts email addresses and phone numbers 
+This program searches the items on google and visits
+each url and extracts email addresses and phone numbers
 from the websites.
 """
 import requests
 import json
 import sys
 import csv
+
+if not len(sys.argv) == 2:
+    exit('Please provide a Api Key as command line arg')
 
 API_KEY = sys.argv[1]
 API_URL = 'https://scrapeulous.com/api'
@@ -29,12 +32,11 @@ def google_search():
 
     payload = {
         "API_KEY": API_KEY,
-        "function": "https://raw.githubusercontent.com/NikolaiT/scrapeulous/master/google_scraper.js",
+        "function": "google_scraper.js",
         "items": items,
         "region": "us",
         "options": {
            "google_params": {
-             "num": 20,
              "hl": "en",
              "gl": "en",
            },
@@ -45,12 +47,19 @@ def google_search():
     r = requests.post(API_URL, data=json.dumps(payload))
     results = r.json()
 
-    # extract links from SERP
+    # extract links from SERP payload
     urls = []
+    failed = 0
+    print('Got {} results'.format(len(results)))
     for res in results:
-        if isinstance(res['result'], list):
-            for link in res['result'][0]['results']:
-                urls.append(link["link"])
+        if isinstance(res['results'], list):
+            if 'organic_results' in res['results'][0][0]:
+                for link in res['results'][0][0]['organic_results']:
+                    urls.append(link['link'])
+            else:
+                failed += 1
+
+    print('{}/{} results failed'.format(failed, len(results)))
 
     # filter links
     filter_domains = ["youtube.com", "wikipedia.org",
@@ -73,38 +82,31 @@ def google_search():
 
 def social_search(urls):
     """
-    Crawl in chunks of 100 items
+    Crawl in chunks of 20 items
     """
     results = []
-    for i in range(0, len(urls), 99):
-        chunk = urls[i:i+99]
+    for i in range(0, len(urls), 20):
+        chunk = urls[i:i+20]
         payload = {
             "API_KEY": API_KEY,
-            "function": "https://raw.githubusercontent.com/NikolaiT/scrapeulous/master/social.js",
+            "function": "social.js",
             "items": chunk,
             "region": "us",
-            "crawl_options": {
-                "link_depth": 0,
-                "request_timeout": 10000
-            }
         }
         r = requests.post(API_URL, data=json.dumps(payload))
-        # print(r.text)
         results.extend(r.json())
     return results
 
 def write_csv(leads):
     data = []
     for lead in leads:
-        if 'item' in lead and 'result' in lead and not 'error_message' in lead["result"]:
-            obj = {
-                "url": lead["item"]
-            }
-            obj.update(lead["result"])
-            data.append(obj)
+        if isinstance(lead, dict):
+            for obj in lead.get("results", []):
+                if 'error_message' not in obj:
+                    data.append(obj)
 
     with open('law-leads.csv', 'w') as csvfile:
-        fieldnames = ['url', 'page_title', 'email_addresses', 'phone_numbers',
+        fieldnames = ['page_title', 'email_addresses', 'phone_numbers',
          'facebook', 'instagram', 'linkedin', 'twitter', 'github']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -115,7 +117,7 @@ def main():
     urls = google_search()
     print(urls)
     leads = social_search(urls)
-    print(leads)
+    # print(leads)
     write_csv(leads)
 
 main()
