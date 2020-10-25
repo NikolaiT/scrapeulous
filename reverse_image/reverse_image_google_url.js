@@ -28,6 +28,7 @@ class ReverseImageGoogle {
       }
     });
 
+    await this.page.waitForSelector('title-with-lhs-icon > a');
     await this.page.click('title-with-lhs-icon > a');
     await this.page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 12000 });
     await this.page.waitForSelector('div[data-ri] a');
