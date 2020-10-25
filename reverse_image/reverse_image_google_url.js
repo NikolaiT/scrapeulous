@@ -16,8 +16,8 @@ class ReverseImageGoogle {
     await this.page.click('input[value="Search by image"]');
     await this.page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 12000 });
   	const btn = await Promise.race([
-      this.page.waitForSelector('#introAgreeButton'),
-      this.page.waitForSelector('title-with-lhs-icon > a')
+      this.page.waitForSelector('#introAgreeButton', { timeout: 12000 }),
+      this.page.waitForSelector('title-with-lhs-icon > a', { timeout: 12000 })
   	]);
 
   	if (await page.$('#introAgreeButton') !== null) {
