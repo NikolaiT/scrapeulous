@@ -34,7 +34,8 @@ class GoogleScraper extends BrowserWorker {
     }
 
     let results = [];
-
+	let upnum_results='';
+	
     for (let page_num = 1; page_num <= num_pages; page_num++) {
       if (page_num === 1) {
         await this.load_start_page();
@@ -43,6 +44,10 @@ class GoogleScraper extends BrowserWorker {
       await this.wait_for_results();
       let parsed = await this.parse(keyword);
       parsed.page_num = page_num;
+	  if (parsed.num_results === upnum_results) {
+		  break;
+	  }
+	  upnum_results = parsed.num_results
       results.push(parsed);
       await this.next_page();
     }
