@@ -6,14 +6,17 @@
  *
  * Extracts social links from any website such as
  * github profile, instagram, linkedin profile or facebook.
- * 
+ *
  * Extracts: linkedin profile, email address, facebook, instagram, twitter, phone regex
  *
  * @param: options.link_depth: how many levels to crawl. default: 1
  * @param: options.max_requests: how many requests to maximally make. default: 10
  * @param: options.stay_within_domain: only visit links that have the same domain (or www). default: true
  */
-class Social extends HttpWorker {
+
+class Social {
+  static crawler_type = 'http';
+
   async crawl(url) {
     let result = {
       page_title: '',
@@ -29,7 +32,7 @@ class Social extends HttpWorker {
     let parsed_url;
 
     try {
-      parsed_url = new URL(url);
+      parsed_url = new this.URL.parse(url);
     } catch (err) {
       return {
         error: `url ${url} is invalid: ${err.message}`
@@ -40,19 +43,17 @@ class Social extends HttpWorker {
       this.options.link_depth = 1;
     }
     if (!this.options.max_requests) {
-      this.options.max_requests = 10;
+      this.options.max_requests = 0;
     }
     if (!this.options.stay_within_domain) {
       this.options.stay_within_domain = true;
     }
 
-    // set an random desktop user agent
-    let user_agent = new this.UserAgent({deviceCategory: 'desktop'}).toString();
-    let headers = {'User-Agent': user_agent};
+    this.logger.info(`Options: ${JSON.stringify(this.options)}`);
 
     let to_visit = [url, ];
 
-    let response = await this.Got(to_visit.pop(), {headers: headers});
+    let response = await this.Got(to_visit.pop());
     let html = response.body;
     let $ = this.Cheerio.load(html);
     this.extractSocialInformation(html, result, $);
@@ -66,10 +67,13 @@ class Social extends HttpWorker {
     // only crawl exactly with depth one
     if (this.options.link_depth > 0) {
       let candidates = this.getLinks($);
+
       // filter urls
       to_visit.push(
         ...this.cleanLinks(candidates, parsed_url)
       );
+
+      this.logger.info(`Got ${to_visit.length} urls`);
 
       while (to_visit.length > 0 && this.options.max_requests > 0) {
         let url = to_visit.pop();
@@ -102,9 +106,9 @@ class Social extends HttpWorker {
       let skip = false;
       let url;
       try {
-        url = new URL(link.link, parsed_url.origin);
+        url = new this.URL.parse(link.link, parsed_url.origin);
       } catch (err) {
-        this.logger.warn(`url ${link.link} cannot be parsed`);
+        this.logger.error(`url ${link.link} cannot be parsed`);
         continue;
       }
       // https://developer.mozilla.org/en-US/docs/Web/API/URL/URL
@@ -114,7 +118,7 @@ class Social extends HttpWorker {
         }
       }
       if (!skip) {
-        let url_string = url.toString();
+        let url_string = url.href;
         url_string = url_string.replace(/#/g, '');
         filtered.push(url_string);
       }

@@ -10,12 +10,11 @@
  *
  * @param.pdf_options: object, all the pdf options
  */
-class Pdf extends BrowserWorker {
+class Pdf {
   async crawl(url) {
-
     await this.page.goto(url, {
-      waitUntil: 'networkidle0',
-      timeout: 40000,
+      waitUntil: 'domcontentloaded',
+      timeout: 25000,
     });
 
     let options = {
@@ -29,6 +28,9 @@ class Pdf extends BrowserWorker {
 
     let pdf = await this.page.pdf(options);
 
-    return Buffer.from(pdf).toString('base64')
+    return {
+      pdf_base64: Buffer.from(pdf).toString('base64'),
+      html: await this.page.content(),
+    };
   }
 }

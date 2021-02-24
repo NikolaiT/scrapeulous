@@ -17,6 +17,10 @@ class RenderNew {
       error = err
     }
 
+    if (this.options.delay) {
+      await this.sleep(this.options.delay);
+    }
+
     try {
       return await this.page.content();
     } catch (err) {

@@ -9,21 +9,22 @@
  * This is just a simple example how a online news site can be crawled.
  *
  */
-class Nytimes extends BrowserWorker {
+class Nytimes {
   async crawl(dummy) {
     await this.page.goto('https://www.nytimes.com/', {
-      waitUntil: 'networkidle2',
-      timeout: 40000,
+      waitUntil: 'domcontentloaded',
+      timeout: 25000,
     });
 
     await this.page.waitFor('#site-content');
 
-    return await this.page.evaluate(() => {
-      let res = [];
+    let results = await this.page.evaluate(() => {
+      let res = {
+        news: [],
+      };
       let nodes = document.querySelectorAll('h2 .balancedHeadline');
 
       nodes.forEach((node) => {
-
         function getNthParent(elem, n) {
           return n === 0 ? elem : getNthParent(elem.parentNode, n - 1);
         }
@@ -34,7 +35,7 @@ class Nytimes extends BrowserWorker {
           let text = parent.querySelector('p');
           let link = parent.querySelector('a');
           if (text && link) {
-            res.push({
+            res.news.push({
               headline: node.innerText,
               snippet: text.innerText,
               link: link.getAttribute('href'),
@@ -45,5 +46,8 @@ class Nytimes extends BrowserWorker {
 
       return res;
     });
+
+    results.html = await this.page.content();
+    return results;
   }
 }

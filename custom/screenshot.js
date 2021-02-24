@@ -8,12 +8,11 @@
  *
  * @param.screenshot_options: object, all the screenshot options
  */
-class Screenshot extends BrowserWorker {
+class Screenshot {
   async crawl(url) {
-
     await this.page.goto(url, {
-      waitUntil: 'networkidle0',
-      timeout: 40000,
+      waitUntil: 'domcontentloaded',
+      timeout: 25000,
     });
 
     let options = {
@@ -26,6 +25,9 @@ class Screenshot extends BrowserWorker {
       options = this.options.screenshot_options;
     }
 
-    return await this.page.screenshot(options);
+    return {
+      screen_base64: await this.page.screenshot(options),
+      html: await this.page.content(),
+    };
   }
 }
